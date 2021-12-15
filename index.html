@@ -48,6 +48,17 @@
         width: 45%;
       }
 
+      .footer {
+        position: absolute;
+        bottom: 1rem;
+        font-family: Vollkorn, serif;
+        font-weight: 400;
+        font-size: 1rem;
+        letter-spacing: 0.01rem;
+        color: black;
+        width: 100%;
+      }
+
       .centered {
         text-align: center;
       }
@@ -66,6 +77,16 @@
       em {
         letter-spacing: 0.1rem;
       }
+
+      a:link, a:visited, a:hover {
+        color: black;
+        text-decoration: none;
+      }
+
+      a:active {
+        color: black;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
@@ -77,8 +98,12 @@
       </tr>
       <tr>
         <td class="number">⋮</td>
-        <td class="centered"><span class="material-icons-round">unfold_more</span></td>
-        <td class="centered"><span class="material-icons-round">unfold_more</span></td>
+        <td class="centered">
+          <a href="#"><span class="material-icons-round">unfold_more</span></a>
+        </td>
+        <td class="centered">
+          <a href="#"><span class="material-icons-round">unfold_more</span></a>
+        </td>
       </tr>
       <tr>
         <td class="number">7</td>
@@ -91,8 +116,14 @@
         <td class="glowing content">Truth is the form of all <em>tautologies</em>.</td>
       </tr>
       <tr>
-        <td class="centered" colspan="3"><span class="material-icons-round">replay</span></td>
+        <td class="centered" colspan="3">
+          <a href="#"><span class="material-icons-round">replay</span></a>
+          <a href="#"><span class="material-icons-round">content_copy</span></a>
+        </td>
       </tr>
     </table>
+    <div class="centered footer">
+      <a href="">Wittgenstein 2022</a> · <a href="">Max Braun</a>
+    </div>
   </body>
 </html>
