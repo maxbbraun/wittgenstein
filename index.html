@@ -9,19 +9,32 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
       body {
-        /* background: #efebe9; */
-        /* background: #ffec00; */
         background: white;
+        font-family: Vollkorn, serif;
+        color: black;
       }
 
-      .propositions {
+      h1 {
+        font-weight: 400;
+        font-size: 2rem;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 0.5rem;
+        text-align: center;
+      }
+
+      h2 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 0.5rem;
+      }
+
+      table {
         width: 70rem;
-        position: absolute;
-        /* top: 50%; */
-        left: 50%;
-        margin-right: -50%;
-        /* transform: translate(-50%, -50%); */
-        transform: translate(-50%, 0);
+        margin-left: auto;
+        margin-right: auto;
         table-layout: fixed;
         border: none;
         border-collapse: separate;
@@ -29,48 +42,32 @@
       }
 
       .number {
-        font-family: Vollkorn, serif;
         font-weight: 600;
         font-size: 1.5rem;
         letter-spacing: 0.01rem;
-        color: black;
         vertical-align: top;
         text-align: left;
         width: 10%;
       }
 
       .content {
-        font-family: Vollkorn, serif;
         font-weight: 400;
         font-size: 1.5rem;
         letter-spacing: 0.01rem;
-        color: black;
         vertical-align: top;
         text-align: left;
         width: 45%;
       }
 
-      .title {
-        font-family: Vollkorn, serif;
-        font-weight: 400;
-        font-size: 2rem;
-        font-style: italic;
-        text-transform: uppercase;
-        letter-spacing: 0.5rem;
-        color: black;
-        vertical-align: top;
-        text-align: left;
-      }
-
-      .english {
+      .left {
         text-align: right;
       }
 
-      .german {
+      .right {
         text-align: left;
       }
 
-      .centered {
+      .middle {
         text-align: center;
       }
 
@@ -84,7 +81,7 @@
         /* text-shadow: -12px 12px 9.8px rgba(255, 236, 0, 0.7), 21px -18.1px 7.3px rgba(255, 255, 255, 1), -18.1px -27.3px 30px rgba(255, 255, 255, 1); */
       }
 
-      em {
+      .content em {
         letter-spacing: 0.1rem;
       }
 
@@ -100,22 +97,22 @@
     </style>
   </head>
   <body>
-    <div class="centered title">
+    <h1>
       Ludwig <span class="highlighted">Wittgenstein</span> 1922 × A.I. <span class="highlighted">2022</span>
-    </div>
+    </h1>
     <table class="propositions">
       <tr>
-        <td class="english title">Tractatus<br>Logico<br>Philosophicus</td>
-        <td class="number"></td>
-        <td class="german title">Logisch<br>Philosophische<br>Abhandlung</td>
+        <td class="left"><h2>Tractatus<br>Logico<br>Philosophicus</h2></td>
+        <td class="middle number"></td>
+        <td class="right"><h2>Logisch<br>Philosophische<br>Abhandlung</h2></td>
       </tr>
       <tr>
-        <td class="english content"><span class="highlighted">Truth is the form of all <em>tautologies</em>.</span></td>
-        <td class="centered number">8</td>
-        <td class="german content"><span class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span></td>
+        <td class="left content"><span class="highlighted">Truth is the form of all <em>tautologies</em>.</span></td>
+        <td class="middle number">8</td>
+        <td class="right content"><span class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span></td>
       </tr>
       <tr>
-        <td class="centered" colspan="3">
+        <td class="middle" colspan="3">
           <a href="#"><span class="material-icons-round">content_copy</span></a>
           &nbsp;
           <a href="#"><span class="material-icons-round">replay</span></a>
@@ -124,23 +121,23 @@
         </td>
       </tr>
       <tr>
-        <td class="english content">Whereof one cannot speak, thereof one must be silent.</td>
-        <td class="centered number">7</td>
-        <td class="german content">Wovon man nicht sprechen kann, darüber muss man schweigen.</td>
+        <td class="left content">Whereof one cannot speak, thereof one must be silent.</td>
+        <td class="middle number">7</td>
+        <td class="right content">Wovon man nicht sprechen kann, darüber muss man schweigen.</td>
       </tr>
       <tr>
-        <td class="centered">
+        <td class="middle">
           <a href="#"><span class="material-icons-round">unfold_more</span></a>
         </td>
-        <td class="centered number">⋮</td>
-        <td class="centered">
+        <td class="middle number">⋮</td>
+        <td class="middle">
           <a href="#"><span class="material-icons-round">unfold_more</span></a>
         </td>
       </tr>
       <tr>
-        <td class="english content">The world is everything that is the case.</td>
-        <td class="centered number">1</td>
-        <td class="german content">Die Welt ist alles, was der Fall ist.</td>
+        <td class="left content">The world is everything that is the case.</td>
+        <td class="middle number">1</td>
+        <td class="right content">Die Welt ist alles, was der Fall ist.</td>
       </tr>
     </table>
   </body>
