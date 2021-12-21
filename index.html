@@ -5,11 +5,13 @@
     <title>Wittgenstein 2022</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
       body {
-        background: #efebe9;
+        /* background: #efebe9; */
+        /* background: #ffec00; */
+        background: white;
       }
 
       .propositions {
@@ -50,11 +52,11 @@
 
       .title {
         font-family: Vollkorn, serif;
-        font-weight: 600;
-        font-size: 1.5rem;
+        font-weight: 400;
+        font-size: 2rem;
         font-style: italic;
         text-transform: uppercase;
-        letter-spacing: 0.1rem;
+        letter-spacing: 0.5rem;
         color: black;
         vertical-align: top;
         text-align: left;
@@ -84,15 +86,14 @@
         text-align: center;
       }
 
-      .glowing {
-        text-shadow:
-          0 0 0.125rem #ffffff,
-          0 0 0.25rem #ffffff,
-          0 0 0.5rem #ffffff,
-          0 0 1rem #4fc3f7,
-          0 0 2rem #4fc3f7,
-          0 0 4rem #4fc3f7,
-          0 0 8rem #4fc3f7;
+      .highlighted {
+        /* background: #ffec00; */
+        background: linear-gradient(104deg, rgba(255, 236, 0, 0) 0.9%, rgba(255, 236, 0, 1.0) 2.4%, rgba(255, 236, 0, 0.5) 5.8%, rgba(255, 236, 0, 0.1) 93%, rgba(255, 236, 0, 0.7) 96%, rgba(255, 236, 0, 0) 98%), linear-gradient(183deg, rgba(255, 236, 0, 0) 0%, rgba(255, 236, 0, 0.3) 7.9%, rgba(255, 236, 0, 0) 15%);
+        padding: 0.1rem 0.5rem;
+        /* -webkit-box-decoration-break: clone; */
+        margin: 0;
+        border-radius: 0.2rem;
+        /* text-shadow: -12px 12px 9.8px rgba(255, 236, 0, 0.7), 21px -18.1px 7.3px rgba(255, 255, 255, 1), -18.1px -27.3px 30px rgba(255, 255, 255, 1); */
       }
 
       em {
@@ -111,16 +112,17 @@
     </style>
   </head>
   <body>
+    <div class="centered title">Ludwig <span class="highlighted">Wittgenstein</span></div>
     <table class="propositions">
       <tr>
         <td class="english title">Tractatus<br>Logico<br>Philosophicus</td>
-        <td class="centered number">1922<br>×<br>2022</td>
+        <td class="centered number">1922<br>×<br><span class="highlighted">2022</span></td>
         <td class="german title">Logisch<br>Philosophische<br>Abhandlung</td>
       </tr>
       <tr>
-        <td class="english glowing content">Truth is the form of all <em>tautologies</em>.</td>
-        <td class="glowing centered number">8</td>
-        <td class="german glowing content">Die Wahrheit ist die Form aller <em>Tautologien</em>.</td>
+        <td class="english content"><span class="highlighted">Truth is the form of all <em>tautologies</em>.</span></td>
+        <td class="centered number">8</td>
+        <td class="german content"><span class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span></td>
       </tr>
       <tr>
         <td class="centered" colspan="3">
