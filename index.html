@@ -52,6 +52,7 @@
         font-family: Vollkorn, serif;
         font-weight: 600;
         font-size: 1.5rem;
+        font-style: italic;
         text-transform: uppercase;
         letter-spacing: 0.01rem;
         color: black;
@@ -69,6 +70,14 @@
         letter-spacing: 0.01rem;
         color: black;
         width: 100%;
+      }
+
+      .english {
+        text-align: right;
+      }
+
+      .german {
+        text-align: left;
       }
 
       .centered {
@@ -104,14 +113,14 @@
   <body>
     <table class="propositions">
       <tr>
-        <td class="number"></td>
-        <td class="title">Tractatus Logico-Philosophicus</td>
-        <td class="title">Logisch-Philosophische Abhandlung</td>
+        <td class="english title">Tractatus<br>Logico<br>Philosophicus</td>
+        <td class="centered number">1922<br>×<br>2022</td>
+        <td class="german title">Logisch<br>Philosophische<br>Abhandlung</td>
       </tr>
       <tr>
-        <td class="glowing number">8</td>
-        <td class="glowing content">Truth is the form of all <em>tautologies</em>.</td>
-        <td class="glowing content">Die Wahrheit ist die Form aller <em>Tautologien</em>.</td>
+        <td class="english glowing content">Truth is the form of all <em>tautologies</em>.</td>
+        <td class="glowing centered number">8</td>
+        <td class="german glowing content">Die Wahrheit ist die Form aller <em>Tautologien</em>.</td>
       </tr>
       <tr>
         <td class="centered" colspan="3">
@@ -121,23 +130,23 @@
         </td>
       </tr>
       <tr>
-        <td class="number">7</td>
-        <td class="content">Whereof one cannot speak, thereof one must be silent.</td>
-        <td class="content">Wovon man nicht sprechen kann, darüber muss man schweigen.</td>
+        <td class="english content">Whereof one cannot speak, thereof one must be silent.</td>
+        <td class="centered number">7</td>
+        <td class="german content">Wovon man nicht sprechen kann, darüber muss man schweigen.</td>
       </tr>
       <tr>
-        <td class="number">⋮</td>
         <td class="centered">
           <a href="#"><span class="material-icons-round">unfold_more</span></a>
         </td>
+        <td class="centered number">⋮</td>
         <td class="centered">
           <a href="#"><span class="material-icons-round">unfold_more</span></a>
         </td>
       </tr>
       <tr>
-        <td class="number">1</td>
-        <td class="content">The world is everything that is the case.</td>
-        <td class="content">Die Welt ist alles, was der Fall ist.</td>
+        <td class="english content">The world is everything that is the case.</td>
+        <td class="centered number">1</td>
+        <td class="german content">Die Welt ist alles, was der Fall ist.</td>
       </tr>
     </table>
     <div class="centered footer">
