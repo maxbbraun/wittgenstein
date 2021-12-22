@@ -19,7 +19,7 @@
       body {
         background: white;
         margin-top: 3rem;
-        margin-bottom: 3rem;
+        margin-bottom: 0;
         margin-left: 2rem;
         margin-right: 2rem;
       }
@@ -54,7 +54,8 @@
         text-align: justify;
         text-justify: auto;
         width: 90%;
-        margin: auto;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       h2 em {
@@ -159,6 +160,15 @@
         box-decoration-break: clone;
         -webkit-box-decoration-break: clone;
       }
+
+      img.ludwig {
+        width: 12rem;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 2rem;
+        margin-bottom: 0;
+      }
     </style>
   </head>
   <body>
@@ -184,7 +194,7 @@
       <div id="permalink-button" class="button material-icons-round">content_copy</div>
       <div id="refresh-button" class="button material-icons-round">replay</div>
       <div id="help-button" class="button material-icons-round">help_outline</div>
-    </span>
+    </div>
     <table class="propositions">
       <tr>
         <th class="english oldstyle proposition">Tractatus Logico-Philosophicus</th>
@@ -2831,6 +2841,7 @@
         <td class="german oldstyle proposition">Die Welt ist alles, was der Fall ist.</td>
       </tr>
     </table>
+    <img class="ludwig" src="ludwig.png" alt="Moriz Nähr, Ludwig Wittgenstein. Portrait for the conferment of the Trinity College scholarship 1929, 1928/29 © Klimt Foundation, Vienna">
   </body>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script type="text/javascript">
