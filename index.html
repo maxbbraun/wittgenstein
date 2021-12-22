@@ -90,20 +90,24 @@
         font-weight: 500;
       }
 
-      a:link, a:visited, a:hover {
-        color: black;
-        text-decoration: none;
-      }
-
-      a:active {
-        color: black;
-        text-decoration: none;
-      }
-
       .buttons {
+        font-size: 1rem;
         text-align: center;
-        letter-spacing: 0.5rem;
-      }    
+      }
+
+      .button {
+        font-size: 1.5rem;
+        margin: 0.2rem;
+        cursor: pointer;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+
+      .button:active {
+        transform: scale(0.95);
+      }
 
       .highlighted {
         padding: 0.2rem 0.8rem;
@@ -137,9 +141,9 @@
       <span class="newstyle">&times; A.I. <span class="highlighted">2022</span></span>
     </h1>
     <div class="buttons">
-      <a href="#"><span class="material-icons-round">content_copy</span></a>
-      <a href="#"><span class="material-icons-round">replay</span></a>
-      <a href="#"><span class="material-icons-round">help_outline</span></a>
+      <span class="button material-icons-round">content_copy</span>
+      <span class="button material-icons-round">replay</span>
+      <span class="button material-icons-round">help_outline</span>
     </span>
     <table class="propositions">
       <tr>
