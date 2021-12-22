@@ -6,7 +6,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&family=Tomorrow:ital,wght@0,400;0,500;1,400;1,500&display=block" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K55K72W17D"></script>
     <script>
@@ -51,6 +50,7 @@
         font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.1rem;
+        line-height: 160%;
         text-align: justify;
         text-justify: auto;
         width: 90%;
@@ -123,8 +123,19 @@
 
       .button {
         color: black;
-        font-size: 1.5rem;
-        margin: 0.2rem;
+        background: white;
+        border-color: black;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.1rem;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.3rem;
+        margin: 0.5rem;
+        border: 0.13rem solid;
+        border-radius: 2rem;
+        display: inline-block;
         cursor: pointer;
         user-select: none;
         -moz-user-select: none;
@@ -132,8 +143,18 @@
         -ms-user-select: none;
       }
 
+      .button .bi {
+        margin-right: 0.2rem;
+      }
+
+      .primary.button {
+        color: white;
+        background: black;
+        border-color: black;
+      }
+
       .button:active {
-        transform: scale(0.95);
+        transform: translateY(0.05rem);
       }
 
       .highlighted {
@@ -186,14 +207,30 @@
       repeatedly articulate novel propositions
       with the apocryphal, <em>post-mystical</em> number ‘8’
       in the hope of revealing
-      hitherto obscured
-      philosophical truths
-      through overextended artificial intelligence.
+      hitherto inaccessible philosophical truths
+      through one severely overextended artificial intelligence.
     </h2>
     <div class="buttons">
-      <div id="permalink-button" class="button material-icons-round">content_copy</div>
-      <div id="refresh-button" class="button material-icons-round">replay</div>
-      <div id="help-button" class="button material-icons-round">help_outline</div>
+      <div class="oldstyle button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+          <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+          <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+        </svg>
+        About
+      </div>
+      <div class="primary oldstyle button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
+          <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
+        </svg>
+        Shuffle
+      </div>
+      <div class="oldstyle button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        Code
+      </div>
     </div>
     <table class="propositions">
       <tr>
