@@ -26,15 +26,14 @@
 
       .oldstyle {
         font-family: Vollkorn, serif;
-        color: black;
       }
 
       .newstyle {
         font-family: Tomorrow, sans-serif;
-        color: black;
       }
 
       h1 {
+        color: black;
         font-size: 2.4rem;
         font-weight: 400;
         font-style: italic;
@@ -45,6 +44,22 @@
 
       h1 .newstyle {
         font-style: normal;
+      }
+
+      h2 {
+        color: black;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.1rem;
+        text-align: justify;
+        text-justify: auto;
+        width: 90%;
+        margin: auto;
+      }
+
+      h2 em {
+        font-style: italic;
+        letter-spacing: 0.2rem;
       }
 
       table.propositions {
@@ -68,8 +83,9 @@
       }
 
       .proposition {
+        color: black;
         font-weight: 400;
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         letter-spacing: 0.01rem;
         vertical-align: top;
       }
@@ -87,8 +103,9 @@
       }
 
       .number {
+        color: black;
         font-weight: 600;
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         letter-spacing: 0.01rem;
         vertical-align: top;
         text-align: center;
@@ -99,11 +116,12 @@
       }
 
       .buttons {
-        font-size: 1rem;
         text-align: center;
+        margin: 1rem;
       }
 
       .button {
+        color: black;
         font-size: 1.5rem;
         margin: 0.2rem;
         cursor: pointer;
@@ -145,9 +163,23 @@
   </head>
   <body>
     <h1>
-      <span class="oldstyle">Ludwig <span class="highlighted">Wittgenstein</span> 1922</span>
-      <span class="newstyle">&times; A.I. <span class="highlighted">2022</span></span>
+      <span class="oldstyle">1922 Ludwig <span class="highlighted">Wittgenstein</span></span>
+      <span class="newstyle">&times; <span class="highlighted">2022</span> A.I.</span>
     </h1>
+    <h2 class="oldstyle">
+      In which,
+      on the occasion of the work’s centennial,
+      I fine-tuned OpenAI’s GPT-3 language model
+      with the bilingual corpus of Wittgenstein’s ‘Tractatus’
+      (in the Ogden translation)
+      and compelled it to
+      repeatedly articulate novel propositions
+      with the apocryphal, <em>post-mystical</em> number ‘8’
+      in the hope of revealing
+      hitherto obscured
+      philosophical truths
+      through overextended artificial intelligence.
+    </h2>
     <div class="buttons">
       <div id="permalink-button" class="button material-icons-round">content_copy</div>
       <div id="refresh-button" class="button material-icons-round">replay</div>
