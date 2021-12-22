@@ -5,8 +5,16 @@
     <title>Wittgenstein 2022</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&family=Tomorrow:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&family=Tomorrow:ital,wght@0,400;0,500;1,400;1,500&display=block" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K55K72W17D"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-K55K72W17D');
+    </script>
     <style>
       body {
         background: white;
@@ -141,9 +149,9 @@
       <span class="newstyle">&times; A.I. <span class="highlighted">2022</span></span>
     </h1>
     <div class="buttons">
-      <span class="button material-icons-round">content_copy</span>
-      <span class="button material-icons-round">replay</span>
-      <span class="button material-icons-round">help_outline</span>
+      <div id="permalink-button" class="button material-icons-round">content_copy</div>
+      <div id="refresh-button" class="button material-icons-round">replay</div>
+      <div id="help-button" class="button material-icons-round">help_outline</div>
     </span>
     <table class="propositions">
       <tr>
@@ -153,11 +161,11 @@
       </tr>
       <tr>
         <td class="english newstyle proposition">
-          <span class="highlighted">Truth is the form of all <em>tautologies</em>.</span>
+          <span id="english-proposition" class="highlighted">Truth is the form of all <em>tautologies</em>.</span>
         </td>
         <td class="newstyle number">8</td>
         <td class="german newstyle proposition">
-          <span class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span>
+          <span id="german-proposition" class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span>
         </td>
       </tr>
       <tr>
@@ -2792,4 +2800,18 @@
       </tr>
     </table>
   </body>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $("#permalink-button").click(() => {
+      // TODO
+    });
+
+    $("#refresh-button").click(() => {
+      // TODO
+    });
+
+    $("#help-button").click(() => {
+      // TODO
+    });
+  </script>
 </html>
