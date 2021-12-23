@@ -21,8 +21,8 @@
         font-family: Vollkorn, serif;
         margin-top: 3rem;
         margin-bottom: 0;
-        margin-left: 2rem;
-        margin-right: 2rem;
+        margin-left: 4rem;
+        margin-right: 4rem;
       }
 
       h1 {
@@ -42,12 +42,8 @@
         font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.1rem;
-        line-height: 160%;
+        line-height: 1.6rem;
         text-align: justify;
-        text-justify: auto;
-        width: 85%;
-        margin-left: auto;
-        margin-right: auto;
       }
 
       h2 em {
@@ -63,7 +59,7 @@
         border-spacing: 0.6rem 1.2rem;
       }
 
-      table.propositions th {
+      table.propositions th.proposition {
         font-size: 1.2rem;
         font-weight: 600;
         font-style: italic;
@@ -77,8 +73,9 @@
 
       .proposition {
         font-weight: 400;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         letter-spacing: 0.01rem;
+        line-height: 1.8rem;
         vertical-align: top;
       }
 
@@ -86,17 +83,27 @@
         letter-spacing: 0.1rem;
       }
 
-      .english {
+      .english.proposition {
+        text-align: justify;
+        text-align-last: right;
+      }
+
+      .german.proposition {
+        text-align: justify;
+        text-align-last: left;
+      }
+
+      th.english.proposition {
         text-align: right;
       }
 
-      .german {
+      th.german.proposition {
         text-align: left;
       }
 
       .number {
         font-weight: 600;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         letter-spacing: 0.01rem;
         vertical-align: top;
         text-align: center;
@@ -111,15 +118,15 @@
         color: black;
         background: white;
         border-color: black;
-        font-size: 1.2rem;
+        font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.1rem;
-        padding-left: 1.1rem;
-        padding-right: 1.1rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.3rem;
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.15rem;
         margin: 0.5rem;
-        border: 0.13rem solid;
+        border: 0.15rem solid;
         border-radius: 2rem;
         display: inline-block;
         cursor: pointer;
@@ -131,6 +138,7 @@
 
       .button .bi {
         margin-right: 0.2rem;
+        margin-bottom: -0.15rem;
       }
 
       .primary.button {
