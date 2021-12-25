@@ -36,6 +36,8 @@
       }
 
       h1 {
+        color: black;
+        font-family: Vollkorn, serif;
         font-size: 2.4rem;
         font-weight: 400;
         font-style: italic;
@@ -49,6 +51,8 @@
       }
 
       h2 {
+        color: black;
+        font-family: Vollkorn, serif;
         font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.1rem;
@@ -74,6 +78,8 @@
       }
 
       th.proposition {
+        color: black;
+        font-family: Vollkorn, serif;
         font-size: 1.2rem;
         font-weight: 600;
         font-style: italic;
@@ -86,8 +92,10 @@
       }
 
       td.proposition {
-        font-weight: 400;
+        color: black;
+        font-family: Vollkorn, serif;
         font-size: 1.3rem;
+        font-weight: 400;
         letter-spacing: 0.01rem;
         line-height: 1.8rem;
         vertical-align: top;
@@ -109,8 +117,10 @@
       }
 
       .number {
-        font-weight: 600;
+        color: black;
+        font-family: Vollkorn, serif;
         font-size: 1.3rem;
+        font-weight: 600;
         letter-spacing: 0.01rem;
         vertical-align: top;
         border-top: 1rem solid transparent;
@@ -125,6 +135,7 @@
 
       .button {
         color: black;
+        font-family: Vollkorn, serif;
         background: white;
         border-color: black;
         font-size: 1rem;
@@ -192,6 +203,7 @@
         margin-right: auto;
         margin-top: 3rem;
         margin-bottom: 0;
+        border: none;
       }
     </style>
   </head>
@@ -215,13 +227,13 @@
           through artificial intelligence.
         </h2>
         <div class="buttons">
-          <div id="shuffle-button" class="primary button">
+          <button id="shuffle-button" class="primary button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shuffle" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
               <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
             </svg>
             Shuffle
-          </div>
+          </button>
           <div id="expand-button" class="button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
@@ -256,11 +268,11 @@
           </tr>
           <tr>
             <td class="english proposition">
-              <span id="english-proposition" class="highlighted">Truth is the form of all <em>tautologies</em>.</span>
+              <span id="english-proposition" class="highlighted">{{ english | safe }}</span>
             </td>
             <td class="number">8</td>
             <td class="german proposition">
-              <span id="german-proposition" class="highlighted">Die Wahrheit ist die Form aller <em>Tautologien</em>.</span>
+              <span id="german-proposition" class="highlighted">{{ german | safe }}</span>
             </td>
           </tr>
           <tr>
@@ -2901,7 +2913,24 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script type="text/javascript">
     $("#shuffle-button").click(() => {
-      // TODO
+      // Disable the button and hide the current proposition while loading.
+      $("#shuffle-button").prop("disabled", true);
+      const textColor = $("#german-proposition").css("color");
+      $("#german-proposition").css("color", "transparent");
+      $("#english-proposition").css("color", "transparent");
+
+      // Request the proposition.
+      $.getJSON('/proposition', (json) => {
+        $("#german-proposition").html(json.german);
+        $("#english-proposition").html(json.english);
+      }).fail(() => {
+        // TODO: Handle errors.
+      }).always(() => {
+        // Restore the UI state after the request.
+        $("#german-proposition").css("color", textColor);
+        $("#english-proposition").css("color", textColor);
+        $("#shuffle-button").prop("disabled", false);
+      });
     });
 
     $("#expand-button").click(() => {
@@ -2917,7 +2946,7 @@
     });
 
     $("#about-button").click(() => {
-      // TODO
+      // TODO: Link to Medium story.
     });
 
     $("#code-button").click(() => {

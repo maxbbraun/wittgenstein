@@ -1,0 +1,9 @@
+.gcloudignore
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+/setup.cfg
