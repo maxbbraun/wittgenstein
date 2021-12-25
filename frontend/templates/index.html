@@ -2916,7 +2916,8 @@
     $("#shuffle-button").click(() => {
       // Disable the button and hide the current proposition while loading.
       $("#shuffle-button").prop("disabled", true);
-      const textColor = $("#german-proposition").css("color");
+      const germanColor = $("#german-proposition").css("color");
+      const englishColor = $("#german-proposition").css("color");
       $("#german-proposition").css("color", "transparent");
       $("#english-proposition").css("color", "transparent");
 
@@ -2924,12 +2925,14 @@
       $.getJSON('/proposition', (json) => {
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
-      }).fail(() => {
-        // TODO: Handle errors.
+      }).fail((jqXHR, textStatus, errorThrown) => {
+        const error = `${jqXHR.status} ${jqXHR.statusText}`;
+        $("#german-proposition").html(error);
+        $("#english-proposition").html(error);
       }).always(() => {
         // Restore the UI state after the request.
-        $("#german-proposition").css("color", textColor);
-        $("#english-proposition").css("color", textColor);
+        $("#german-proposition").css("color", germanColor);
+        $("#english-proposition").css("color", englishColor);
         $("#shuffle-button").prop("disabled", false);
       });
     });
