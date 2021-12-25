@@ -2926,9 +2926,8 @@
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
       }).fail((jqXHR, textStatus, errorThrown) => {
-        const error = `${jqXHR.status} ${jqXHR.statusText}`;
-        $("#german-proposition").html(error);
-        $("#english-proposition").html(error);
+        $("#german-proposition").html(jqXHR.statusText);
+        $("#english-proposition").html(jqXHR.status);
       }).always(() => {
         // Restore the UI state after the request.
         $("#german-proposition").css("color", germanColor);
