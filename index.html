@@ -32,6 +32,7 @@
         margin-top: 3rem;
         margin-left: 3rem;
         margin-right: 3rem;
+        margin-bottom: 0;
       }
 
       h1 {
@@ -41,15 +42,22 @@
         text-transform: uppercase;
         letter-spacing: 0.6rem;
         text-align: center;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
       }
 
       h2 {
         font-size: 1rem;
         font-weight: 600;
         letter-spacing: 0.1rem;
-        line-height: 1.6rem;
+        line-height: 1.7rem;
         text-align: justify;
-        margin-bottom: 1.5rem;
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
       }
 
       h2 em {
@@ -62,10 +70,10 @@
         table-layout: auto;
         border: none;
         border-collapse: separate;
-        border-spacing: 1rem 1.5rem;
+        border-spacing: 0 0;
       }
 
-      table.propositions th.proposition {
+      th.proposition {
         font-size: 1.2rem;
         font-weight: 600;
         font-style: italic;
@@ -73,28 +81,31 @@
         letter-spacing: 0.2rem;
       }
 
-      table.propositions th.proposition {
+      th.proposition {
         width: 50%;
       }
 
-      .proposition {
+      td.proposition {
         font-weight: 400;
         font-size: 1.3rem;
         letter-spacing: 0.01rem;
         line-height: 1.8rem;
         vertical-align: top;
+        border-top: 1rem solid transparent;
       }
 
-      .proposition em {
+      td.proposition em {
         letter-spacing: 0.1rem;
       }
 
       .english.proposition {
         text-align: right;
+        border-right: 1rem solid transparent;
       }
 
       .german.proposition {
         text-align: left;
+        border-left: 1rem solid transparent;
       }
 
       .number {
@@ -102,13 +113,14 @@
         font-size: 1.3rem;
         letter-spacing: 0.01rem;
         vertical-align: top;
+        border-top: 1rem solid transparent;
         text-align: center;
       }
 
       .buttons {
         text-align: center;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
       }
 
       .button {
@@ -178,7 +190,7 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 1rem;
+        margin-top: 3rem;
         margin-bottom: 0;
       }
     </style>
@@ -195,13 +207,12 @@
           on the occasion of the work’s centennial,
           I fine-tuned OpenAI’s GPT-3 language model
           with the bilingual corpus of Ludwig Wittgenstein’s ‘Tractatus’
-          (in the Ogden translation)
-          and repeatedly compelled it to
+          and compelled it to
           articulate novel propositions
-          with the apocryphal, <em>post-mystical</em> number ‘8’
+          with the imaginary, <em>post-mystical</em> number ‘8’
           in the hope of revealing
-          hitherto inaccessible philosophical truths
-          through one severely overextended artificial intelligence.
+          new philosophical truths
+          through artificial intelligence.
         </h2>
         <div class="buttons">
           <div id="shuffle-button" class="primary button">
