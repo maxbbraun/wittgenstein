@@ -1,10 +1,13 @@
 from flask import Flask
 from flask import render_template
 from flask import send_from_directory
-from flask import request
+from flask_minify import decorators
+from flask_minify import minify
+
 from google.cloud import bigquery
 
 app = Flask(__name__)
+minify(app=app, caching_limit=0, passive=True)
 
 
 def random_proposition():
@@ -36,6 +39,7 @@ def find_proposition(id):
 
 
 @app.route('/')
+@decorators.minify(html=True, js=True, cssless=True)
 def index():
     id, german, english = random_proposition()
     return render_template('index.html', id=id, german=german, english=english)

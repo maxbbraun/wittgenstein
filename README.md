@@ -32,6 +32,7 @@ https://colab.research.google.com/drive/1MW4av42BfNP_24lcV99Zi3SqBd4WH5O1?usp=ch
 
 # TODO
 - Permalink to generated proposition
+- Mobile layout
 - Social share image with proposition and link to website
 - Cloud Function to generate and add to database
 - Generate more propositions
