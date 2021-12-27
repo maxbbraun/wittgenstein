@@ -12,15 +12,15 @@
 
 ## Training
 
+[Colab](training.ipynb)
+
 - LaTeX parsing
 - Unicode/HTML rendering
 - GPT-3 fine-tuning & inference
 
-[Colab](training.ipynb)
-
 ## Frontend
 
-[App Engine Standard Python 3](https://cloud.google.com/appengine/docs/standard/python3/runtime)
+[App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime)
 
 ```bash
 cd frontend
