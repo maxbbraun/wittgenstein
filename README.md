@@ -3,10 +3,12 @@
 [![](website.png)](https://wittgenstein.app)
 
 > TODO
-> - Social share image (dynamic?)
+> - Social share image (Custom per proposition?)
 > - Generate more propositions
-> - Clean up Colab and check in (keys!)
-> - Medium story
+> - Write Medium story
+> - Make GitHub repo public
+> - Update 'About' link
+> - Publish in Medium publication (Other magazine?)
 
 ## Training
 
