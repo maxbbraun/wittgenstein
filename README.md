@@ -1,12 +1,16 @@
 # Wittgenstein 2022
 
+> TODO
+> - Social share image (dynamic?)
+> - Generate more propositions
+> - Clean up Colab and check in (keys!)
+> - Medium story
+
 ## Frontend
 
 ```bash
 cd frontend
 ```
-
-### Test
 
 ```bash
 python3 -m venv venv
@@ -20,8 +24,6 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account.json"
 python main.py
 ```
 
-### Deploy
-
 ```bash
 gcloud app deploy
 ```
@@ -29,8 +31,3 @@ gcloud app deploy
 ## Backend
 
 https://colab.research.google.com/drive/1MW4av42BfNP_24lcV99Zi3SqBd4WH5O1?usp=chrome_ntp#scrollTo=RcYFHdyhd23H
-
-# TODO
-- Social share image with proposition and link to website
-- Generate more propositions
-- Clean up Colab and check in (keys!)
