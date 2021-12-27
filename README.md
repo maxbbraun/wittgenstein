@@ -11,6 +11,7 @@
 > - Publish in Medium publication (Other magazine?)
 > - Post Twitter thread
 > - Add to braun.design
+> - Try Google LaMDA, DeepMind Gopher
 
 ## Training
 
