@@ -9,6 +9,8 @@
 > - Make GitHub repo public
 > - Update 'About' link
 > - Publish in Medium publication (Other magazine?)
+> - Post Twitter thread
+> - Add to braun.design
 
 ## Training
 
