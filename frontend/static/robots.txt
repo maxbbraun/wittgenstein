@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-Allow: /favicon.ico
-Disallow: /ludwig.png
+Disallow: /proposition
