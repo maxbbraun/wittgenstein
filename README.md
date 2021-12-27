@@ -14,13 +14,13 @@
 
 [Colab](training.ipynb)
 
-- LaTeX parsing
+- [Project Gutenberg](https://www.gutenberg.org/ebooks/5740) LaTeX parsing
 - Unicode/HTML rendering
-- GPT-3 fine-tuning & inference
+- OpenAI GPT-3 [fine-tuning](https://beta.openai.com/docs/guides/fine-tuning) & [inference](https://beta.openai.com/docs/api-reference)
 
 ## Frontend
 
-[App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime)
+[App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime) & [BigQuery](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-cloud-console)
 
 ```bash
 cd frontend
