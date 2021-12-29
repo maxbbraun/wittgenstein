@@ -3,9 +3,8 @@
 [![](website.png)](https://wittgenstein.app)
 
 > TODO
-> - Social share image (Custom per proposition?)
-> - Generate more propositions
 > - Write Medium story
+> - Generate more propositions
 > - Make GitHub repo public
 > - Update 'About' link
 > - Publish in Medium publication (Other magazine?)
