@@ -58,6 +58,13 @@ def find_proposition(id):
     return row.id, row.german, row.english
 
 
+def render_page(id, german, english):
+    return render_template('index.html',
+                           id=id,
+                           german=german,
+                           english=english)
+
+
 def render_json(id, german, english):
     return {
         'id': id,
@@ -70,7 +77,7 @@ def render_json(id, german, english):
 def random_page():
     # Serve the main page with a random proposition.
     id, german, english = random_proposition()
-    return render_template('index.html', id=id, german=german, english=english)
+    return render_page(id=id, german=german, english=english)
 
 
 @app.route('/<id>')
@@ -78,7 +85,7 @@ def random_page():
 def proposition_page(id):
     # Serve the main page with a specific proposition (via its ID).
     id, german, english = find_proposition(id)
-    return render_template('index.html', id=id, german=german, english=english)
+    return render_page(id=id, german=german, english=english)
 
 
 @app.route('/proposition')
