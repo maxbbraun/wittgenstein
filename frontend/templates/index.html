@@ -4,6 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Wittgenstein 2022</title>
+    <meta name="description" content="1922 Wittgenstein meets 2022 A.I.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Wittgenstein 2022">
+    <meta name="twitter:description" content="1922 Wittgenstein meets 2022 A.I.">
+    <meta name="twitter:image" content="{{ url_for('social_png') }}">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="Wittgenstein 2022">
+    <meta property="og:description" content="1922 Wittgenstein meets 2022 A.I.">
+    <meta property="og:url" content="{{ url_for('id_page', id=id, _external=True) }}">
+    <meta property="og:image" content="{{ url_for('social_png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=block" rel="stylesheet">
@@ -3536,7 +3546,7 @@
       });
 
       // Request the proposition.
-      $.getJSON("/proposition", (json) => {
+      $.getJSON("{{ url_for('random_json') }}", (json) => {
         // Update the proposition content.
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);

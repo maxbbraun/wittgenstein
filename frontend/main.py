@@ -72,6 +72,10 @@ def render_json(id, german, english):
         'english': english}
 
 
+def render_static(filename, mimetype):
+    return send_from_directory('static', filename, mimetype=mimetype)
+
+
 @app.route('/')
 @decorators.minify(html=True, js=True, cssless=True)
 def random_page():
@@ -82,7 +86,7 @@ def random_page():
 
 @app.route('/<id>')
 @decorators.minify(html=True, js=True, cssless=True)
-def proposition_page(id):
+def id_page(id):
     # Serve the main page with a specific proposition (via its ID).
     id, german, english = find_proposition(id)
     return render_page(id=id, german=german, english=english)
@@ -95,32 +99,24 @@ def random_json():
     return render_json(id=id, german=german, english=english)
 
 
-@app.route('/proposition/<id>')
-def proposition_json(id):
-    # Serve a specific proposition (via its ID) as raw data.
-    id, german, english = find_proposition(id)
-    return render_json(id=id, german=german, english=english)
-
-
 @app.route('/robots.txt')
-def robots():
-    return send_from_directory('static',
-                               'robots.txt',
-                               mimetype='text/plain')
+def robots_txt():
+    return render_static(filename='robots.txt', mimetype='text/plain')
 
 
 @app.route('/favicon.ico')
-def favicon():
-    return send_from_directory('static',
-                               'favicon.ico',
-                               mimetype='image/x-icon')
+def favicon_ico():
+    return render_static(filename='favicon.ico', mimetype='image/x-icon')
 
 
 @app.route('/ludwig.png')
-def ludwig():
-    return send_from_directory('static',
-                               'ludwig.png',
-                               mimetype='image/png')
+def ludwig_png():
+    return render_static(filename='ludwig.png', mimetype='image/png')
+
+
+@app.route('/social.png')
+def social_png():
+    return render_static(filename='social.png', mimetype='image/png')
 
 
 if __name__ == '__main__':
