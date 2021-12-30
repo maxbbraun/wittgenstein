@@ -14,7 +14,7 @@
 
 ## Training
 
-[Colab](training.ipynb)
+[Colab](training.ipynb) ([interactive](https://colab.research.google.com/github/maxbbraun/wittgenstein/blob/main/training.ipynb))
 
 - [Project Gutenberg](https://www.gutenberg.org/ebooks/5740) LaTeX parsing
 - Unicode/HTML rendering
