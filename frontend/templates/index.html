@@ -23,7 +23,10 @@
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
-      gtag("config", "G-K55K72W17D");
+      gtag("config", "G-K55K72W17D", {
+        // All pageview events are manually triggered.
+        send_page_view: false
+      });
     </script>
     <style>
       body {
@@ -3510,7 +3513,15 @@
   </body>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script type="text/javascript">
-    // Set the initial history state to show the ID in the URL and handle the back button.
+    // Adds the current (English) proposition to the page title.
+    function updatePageTitle() {
+      const proposition = $("#english-proposition").text();  // Ignores HTML emphasis.
+      const title = `Wittgenstein 2022: ${proposition}`;
+      document.title = title;
+      return title;
+    }
+
+    // Set the initial history state to show the ID in the URL and the proposition in the page title and to handle the back button.
     const initialId = "{{ id }}";
     const initialState = {
       id: initialId,
@@ -3518,16 +3529,27 @@
       english: $("#english-proposition").html()
     };
     const initialPath = `/${initialId}`;
+    const initialTitle = updatePageTitle();
     history.replaceState(initialState, document.title, initialPath);
 
-    // Update the tracker state to match the virtual page.
+    // Update the tracker state and trigger a virtual pageview event.
     gtag("set", "page_path", initialPath);
+    gtag("set", "page_title", initialTitle);
+    gtag("event", "page_view");
 
     // Handle back button events using history state.
     $(window).on("popstate", (event) => {
+      // Restore the proposition text and page title.
       const state = event.originalEvent.state;
       $("#german-proposition").html(state.german);
       $("#english-proposition").html(state.english);
+      const historyPath = `/${state.id}`;
+      const historyTitle = updatePageTitle();
+
+      // Update the tracker state and trigger a virtual pageview event.
+      gtag("set", "page_path", historyPath);
+      gtag("set", "page_title", historyTitle);
+      gtag("event", "page_view");
     });
 
     // Display a new proposition when the 'Shuffle' button is pressed.
@@ -3541,8 +3563,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "shuffle"
+        event_category: "engagement",
+        event_label: "shuffle"
       });
 
       // Request the proposition.
@@ -3551,17 +3573,19 @@
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
 
-        // Update the ID in the URL.
+        // Update the ID in the URL and the page title.
         const newState = {
           id: json.id,
           german: json.german,
           english: json.english
         };
         const newPath = `/${json.id}`;
+        const newTitle = updatePageTitle();
         history.pushState(newState, document.title, newPath);
 
         // Update the tracker state and trigger a virtual pageview event.
         gtag("set", "page_path", newPath);
+        gtag("set", "page_title", newTitle);
         gtag("event", "page_view");
       }).fail((jqXHR, textStatus, errorThrown) => {
         // Show an error message if the request failed.
@@ -3571,8 +3595,8 @@
 
         // Log the error message.
         gtag("event", "exception", {
-          "description": errorThrown,
-          "fatal": false
+          description: errorThrown,
+          fatal: false
         });
       }).always(() => {
         // Restore the UI state after any request.
@@ -3592,8 +3616,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "expand"
+        event_category: "engagement",
+        event_label: "expand"
       });
     });
 
@@ -3607,8 +3631,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "collapse"
+        event_category: "engagement",
+        event_label: "collapse"
       });
     });
 
@@ -3623,8 +3647,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "german"
+        event_category: "engagement",
+        event_label: "german"
       });
     });
 
@@ -3639,8 +3663,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "english"
+        event_category: "engagement",
+        event_label: "english"
       });
     });
 
@@ -3651,8 +3675,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "about"
+        event_category: "engagement",
+        event_label: "about"
       });
     });
 
@@ -3662,8 +3686,8 @@
 
       // Log an analytics event.
       gtag("event", "button", {
-        "event_category": "engagement",
-        "event_label": "code"
+        event_category: "engagement",
+        event_label: "code"
       });
     });
   </script>
