@@ -5,6 +5,7 @@
 > TODO
 > - Write Medium story
 > - Generate more propositions
+> - Set up @Wittgenstein22 Twitter (tweet propositions?)
 > - Make GitHub repo public
 > - Update 'About' link
 > - Publish in Medium publication (Other magazine?)
