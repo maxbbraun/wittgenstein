@@ -13,15 +13,15 @@
 > - Add to braun.design
 > - Try Google LaMDA, DeepMind Gopher
 
-## Training
+## Data
 
-[Colab](training.ipynb) ([interactive](https://colab.research.google.com/github/maxbbraun/wittgenstein/blob/main/training.ipynb))
+[Colab](data.ipynb) ([interactive](https://colab.research.google.com/github/maxbbraun/wittgenstein/blob/main/data.ipynb))
 
 - [Project Gutenberg](https://www.gutenberg.org/ebooks/5740) LaTeX parsing
 - Unicode/HTML rendering
 - OpenAI GPT-3 [fine-tuning](https://beta.openai.com/docs/guides/fine-tuning) & [inference](https://beta.openai.com/docs/api-reference)
 
-## Frontend
+## Website
 
 [App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime) & [Firestore](https://firebase.google.com/docs/firestore)
 
