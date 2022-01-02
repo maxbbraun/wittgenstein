@@ -3,8 +3,10 @@ from flask import render_template
 from flask import send_from_directory
 from flask_minify import decorators
 from flask_minify import minify
-from google.cloud import bigquery
+from google.cloud import firestore
+import random
 import re
+import sys
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -16,9 +18,29 @@ def validate_id(id):
         return False
 
     # The ID must match a regular expression.
-    pattern = re.compile(r'^[0-9a-f]{12}$')
+    pattern = re.compile(r'^[0-9a-zA-Z]{20}$')
     match = pattern.match(id)
     return bool(match)
+
+
+def random_query(propositions_ref, random_pivot, lower):
+    # Query for propositions either below or above the random pivot number.
+    if lower:
+        comparator = '<'
+        direction = firestore.Query.DESCENDING
+    else:
+        comparator = '>='
+        direction = firestore.Query.ASCENDING
+
+    # Run the query to return one proposition near the random pivot number.
+    query_ref = propositions_ref.where('random', comparator, random_pivot)
+    query_ref = query_ref.order_by('random', direction)
+    query_ref = query_ref.limit(1)
+    try:
+        return next(query_ref.stream())
+    except StopIteration:
+        # The query returned no results.
+        return None
 
 
 def random_proposition():
@@ -30,32 +52,37 @@ def find_proposition(id):
     if not validate_id(id):
         id = None
 
-    # Compose the query.
-    client = bigquery.Client()
-    query = ('SELECT id, german, english '
-             'FROM tractatus.propositions ')
-    if id:
-        # Pick the proposition with the provided ID.
-        query += "WHERE id = '%s' " % id
+    # Get the propositions from Firestore.
+    db = firestore.Client()
+    propositions_ref = db.collection('propositions')
+
+    if not id:
+        # Select a random proposition by querying around a random pivot number.
+        random_pivot = random.randint(0, sys.maxsize)
+        proposition = random_query(propositions_ref, random_pivot, lower=True)
+        if not proposition:
+            # If there is none below, try above.
+            proposition = random_query(propositions_ref, random_pivot,
+                                       lower=False)
+
+        if proposition:
+            return (proposition.id,
+                    proposition.get('german'),
+                    proposition.get('english'))
+        else:
+            error = 'No propositions found'
+            return '', error, error
+
+    # Look up a proposition by its ID.
+    proposition_ref = propositions_ref.document(id)
+    proposition = proposition_ref.get()
+    if proposition.exists:
+        return (proposition.id,
+                proposition.get('german'),
+                proposition.get('english'))
     else:
-        # Pick a random proposition matching basic requirements.
-        query += ("WHERE number = '8' "
-                  "ORDER BY RAND() ")
-    query += 'LIMIT 1'
-
-    # Make the request.
-    job = client.query(query)
-    rows = job.result()
-
-    try:
-        # Read the first row.
-        row = next(rows)
-    except StopIteration:
-        # The query contained no propositions.
-        error = 'Not found'
+        error = 'Proposition not found'
         return '', error, error
-
-    return row.id, row.german, row.english
 
 
 def render_page(id, german, english):

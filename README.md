@@ -23,7 +23,7 @@
 
 ## Frontend
 
-[App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime) & [BigQuery](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-cloud-console)
+[App Engine](https://cloud.google.com/appengine/docs/standard/python3/runtime) & [Firestore](https://firebase.google.com/docs/firestore)
 
 ```bash
 cd frontend
