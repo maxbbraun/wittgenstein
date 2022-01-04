@@ -6,7 +6,6 @@ from flask_minify import minify
 from google.cloud import firestore
 import random
 import re
-import sys
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -23,28 +22,29 @@ def validate_id(id):
     return bool(match)
 
 
-def random_query(propositions_ref, random_pivot, lower):
-    # Query for propositions either below or above the random pivot number.
-    if lower:
-        comparator = '<'
-        direction = firestore.Query.DESCENDING
-    else:
-        comparator = '>='
-        direction = firestore.Query.ASCENDING
-
-    # Run the query to return one proposition near the random pivot number.
-    query_ref = propositions_ref.where('random', comparator, random_pivot)
-    query_ref = query_ref.order_by('random', direction)
-    query_ref = query_ref.limit(1)
-    try:
-        return next(query_ref.stream())
-    except StopIteration:
-        # The query returned no results.
-        return None
-
-
 def random_proposition():
     return find_proposition(None)
+
+
+@firestore.transactional
+def random_query(transaction, propositions_ref, metadata_ref):
+    # Look up the current total number of propositions.
+    metadata = metadata_ref.get(transaction=transaction)
+    total = metadata.get('total')
+
+    # Pick one index from a uniform random distribution.
+    random_index = random.randint(0, total)
+
+    # Retrieve the proposition with that index.
+    query_ref = propositions_ref.where(
+        'index', '==', random_index).limit(1)
+    try:
+        proposition = next(query_ref.stream())
+    except StopIteration:
+        # The query returned no results.
+        proposition = None
+
+    return proposition
 
 
 def find_proposition(id):
@@ -57,13 +57,10 @@ def find_proposition(id):
     propositions_ref = db.collection('propositions')
 
     if not id:
-        # Select a random proposition by querying around a random pivot number.
-        random_pivot = random.randint(0, sys.maxsize)
-        proposition = random_query(propositions_ref, random_pivot, lower=True)
-        if not proposition:
-            # If there is none below, try above.
-            proposition = random_query(propositions_ref, random_pivot,
-                                       lower=False)
+        # Select a random proposition.
+        transaction = db.transaction()
+        metadata_ref = db.collection('metadata').document('propositions')
+        proposition = random_query(transaction, propositions_ref, metadata_ref)
 
         if proposition:
             return (proposition.id,
@@ -76,6 +73,7 @@ def find_proposition(id):
     # Look up a proposition by its ID.
     proposition_ref = propositions_ref.document(id)
     proposition = proposition_ref.get()
+
     if proposition.exists:
         return (proposition.id,
                 proposition.get('german'),
