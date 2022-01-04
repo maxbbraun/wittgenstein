@@ -10,6 +10,7 @@
 > - Update 'About' link
 > - Publish in Medium publication (Other magazine?)
 > - Post Twitter thread
+> - Link to Medium from GitHub
 > - Add to braun.design
 > - Try Google LaMDA, DeepMind Gopher
 
