@@ -3513,6 +3513,9 @@
   </body>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script type="text/javascript">
+    // Any current async proposition request or null.
+    let currentRequest = null;
+
     // Adds the current (English) proposition to the page title.
     function updatePageTitle() {
       const proposition = $("#english-proposition").text();  // Ignores HTML emphasis.
@@ -3539,6 +3542,12 @@
 
     // Handle back button events using history state.
     $(window).on("popstate", (event) => {
+      // If there is an outstanding async request, abort it.
+      if (currentRequest) {
+        currentRequest.abort("aborted (popstate)");
+        currentRequest = null;
+      }
+
       // Restore the proposition text and page title.
       const state = event.originalEvent.state;
       $("#german-proposition").html(state.german);
@@ -3569,7 +3578,7 @@
 
       // Request the proposition.
       const randomUrl = `{{ url_for('random_json') }}?exclude=${history.state.id}`;
-      $.getJSON(randomUrl, (json) => {
+      currentRequest = $.getJSON(randomUrl, (json) => {
         // Update the proposition content.
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
@@ -3589,7 +3598,7 @@
         gtag("set", "page_title", newTitle);
         gtag("event", "page_view");
       }).fail((jqXHR, textStatus, errorThrown) => {
-        // Show an error message if the request failed.
+        // Show an error message if the request failed unexpectedly.
         console.error(errorThrown);
         $("#german-proposition").html(errorThrown);
         $("#english-proposition").html(errorThrown);
@@ -3604,6 +3613,9 @@
         $("#german-proposition").css("color", germanColor);
         $("#english-proposition").css("color", englishColor);
         $("#shuffle-button").prop("disabled", false);
+
+        // Remove the current request.
+        currentRequest = null;
       });
     });
 
