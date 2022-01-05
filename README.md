@@ -2,18 +2,6 @@
 
 [![](website.png)](https://wittgenstein.app)
 
-> TODO
-> - Write Medium story
-> - Generate more propositions
-> - Set up @Wittgenstein22 Twitter (tweet propositions?)
-> - Make GitHub repo public
-> - Update 'About' link
-> - Publish in Medium publication (Other magazine?)
-> - Post Twitter thread
-> - Link to Medium from GitHub
-> - Add to braun.design
-> - Try Google LaMDA, DeepMind Gopher
-
 ## Data
 
 [Colab](data.ipynb) ([interactive](https://colab.research.google.com/github/maxbbraun/wittgenstein/blob/main/data.ipynb))
