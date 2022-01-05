@@ -33,7 +33,7 @@ def random_query(transaction, propositions_ref, metadata_ref):
     total = metadata.get('total')
 
     # Pick one index from a uniform random distribution.
-    random_index = random.randint(0, total)
+    random_index = random.randrange(total)
 
     # Retrieve the proposition with that index.
     query_ref = propositions_ref.where(
