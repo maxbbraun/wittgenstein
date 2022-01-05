@@ -1,9 +1,11 @@
 from flask import Flask
 from flask import render_template
+from flask import request
 from flask import send_from_directory
 from flask_minify import decorators
 from flask_minify import minify
 from google.cloud import firestore
+from google.cloud.firestore_v1.field_path import FieldPath
 import random
 import re
 
@@ -22,22 +24,28 @@ def validate_id(id):
     return bool(match)
 
 
-def random_proposition():
-    return find_proposition(None)
+def random_proposition(exclude=None):
+    return find_proposition(id=None, exclude=exclude)
 
 
 @firestore.transactional
-def random_query(transaction, propositions_ref, metadata_ref):
+def random_query(transaction, propositions_ref, metadata_ref,
+                 exclude_ref=None):
     # Look up the current total number of propositions.
     metadata = metadata_ref.get(transaction=transaction)
     total = metadata.get('total')
 
-    # Pick one index from a uniform random distribution.
-    random_index = random.randrange(total)
+    # Pick an index from a uniform random distribution, optionally excluding
+    # one proposition's index.
+    random_range = list(range(total))
+    exclude = exclude_ref.get()
+    if exclude.exists:
+        exclude_index = exclude.get('index')
+        random_range.remove(exclude_index)
+    random_index = random.choice(random_range)
 
     # Retrieve the proposition with that index.
-    query_ref = propositions_ref.where(
-        'index', '==', random_index).limit(1)
+    query_ref = propositions_ref.where('index', '==', random_index).limit(1)
     try:
         proposition = next(query_ref.stream())
     except StopIteration:
@@ -47,7 +55,7 @@ def random_query(transaction, propositions_ref, metadata_ref):
     return proposition
 
 
-def find_proposition(id):
+def find_proposition(id, exclude=None):
     # Only allow well-formed IDs in the query.
     if not validate_id(id):
         id = None
@@ -60,7 +68,9 @@ def find_proposition(id):
         # Select a random proposition.
         transaction = db.transaction()
         metadata_ref = db.collection('metadata').document('propositions')
-        proposition = random_query(transaction, propositions_ref, metadata_ref)
+        exclude_ref = propositions_ref.document(exclude)
+        proposition = random_query(transaction, propositions_ref, metadata_ref,
+                                   exclude_ref=exclude_ref)
 
         if proposition:
             return (proposition.id,
@@ -113,14 +123,17 @@ def random_page():
 @decorators.minify(html=True, js=True, cssless=True)
 def id_page(id):
     # Serve the main page with a specific proposition (via its ID).
-    id, german, english = find_proposition(id)
+    id, german, english = find_proposition(id=id)
     return render_page(id=id, german=german, english=english)
 
 
-@app.route('/proposition')
+@app.route('/random.json')
 def random_json():
+    # Optionally exclude a particular proposition by ID.
+    exclude = request.args.get('exclude')
+
     # Serve a random proposition as raw data.
-    id, german, english = random_proposition()
+    id, german, english = random_proposition(exclude=exclude)
     return render_json(id=id, german=german, english=english)
 
 

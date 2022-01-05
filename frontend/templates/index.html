@@ -3568,7 +3568,8 @@
       });
 
       // Request the proposition.
-      $.getJSON("{{ url_for('random_json') }}", (json) => {
+      const randomUrl = `{{ url_for('random_json') }}?exclude=${history.state.id}`;
+      $.getJSON(randomUrl, (json) => {
         // Update the proposition content.
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
