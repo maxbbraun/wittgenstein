@@ -77,7 +77,7 @@ def find_proposition(id, exclude_id=None):
                     proposition.get('german'),
                     proposition.get('english'))
         else:
-            error = 'No propositions found'
+            error = '<em>NO PROPOSITIONS FOUND</em>'
             return '', error, error
 
     # Look up a proposition by its ID.
@@ -89,7 +89,7 @@ def find_proposition(id, exclude_id=None):
                 proposition.get('german'),
                 proposition.get('english'))
     else:
-        error = 'Proposition not found'
+        error = '<em>PROPOSITION NOT FOUND</em>'
         return '', error, error
 
 
