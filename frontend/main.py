@@ -152,6 +152,11 @@ def ludwig_png():
     return render_static(filename='ludwig.png', mimetype='image/png')
 
 
+@app.route('/ludwig-vr.png')
+def ludwig_vr_png():
+    return render_static(filename='ludwig-vr.png', mimetype='image/png')
+
+
 @app.route('/social.png')
 def social_png():
     return render_static(filename='social.png', mimetype='image/png')
