@@ -1,5 +1,7 @@
 # Wittgenstein 2022
 
+Try it out at [wittgenstein.app](https://wittgenstein.app) and read more on [Medium](https://maxbraun.medium.com/ac730298098?source=friends_link&sk=17f0f6830659a5d6b5521662cff8a463).
+
 [![](website.png)](https://wittgenstein.app)
 
 ## Data
