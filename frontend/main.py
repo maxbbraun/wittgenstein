@@ -1,7 +1,9 @@
 from flask import Flask
+from flask import make_response
 from flask import render_template
 from flask import request
 from flask import send_from_directory
+from flask import url_for
 from flask_minify import decorators
 from flask_minify import minify
 from google.cloud import firestore
@@ -140,6 +142,25 @@ def random_json():
 @app.route('/robots.txt')
 def robots_txt():
     return render_static(filename='robots.txt', mimetype='text/plain')
+
+
+@app.route('/sitemap.txt')
+def sitemap_txt():
+    # Get all propositions from Firestore.
+    db = firestore.Client()
+    propositions_ref = db.collection('propositions')
+    query_ref = propositions_ref.order_by(FieldPath.document_id())
+
+    # Create a list of fully qualified proposition URLs.
+    urls = []
+    for proposition in query_ref.stream():
+        url = url_for('id_page', id=proposition.id, _external=True)
+        urls.append(url)
+
+    # Return the list of URLs as plain text.
+    response = make_response('\n'.join(urls), 200)
+    response.mimetype = 'text/plain'
+    return response
 
 
 @app.route('/favicon.ico')
