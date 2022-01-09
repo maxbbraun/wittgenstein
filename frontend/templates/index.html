@@ -3708,13 +3708,21 @@
 
     // Swap the images of Ludwig with or without a headset.
     function toggleLudwig() {
-      if ($("#ludwig-on").is(":visible")) {
+      const ludwigOn = $("#ludwig-on").is(":visible");
+
+      if (ludwigOn) {
         $("#ludwig-on").hide();
         $("#ludwig-off").show();
       } else {
         $("#ludwig-off").hide()
         $("#ludwig-on").show();
       }
+
+      // Log an analytics event.
+      gtag("event", "toggle_ludwig", {
+        event_category: "engagement",
+        event_label: (ludwigOn ? "off" : "on")
+      });
     }
 
     // Trigger the image swap on mouse enter/leave for desktop and tap for mobile.
