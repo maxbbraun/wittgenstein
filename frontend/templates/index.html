@@ -26,7 +26,7 @@
       function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
       gtag("config", "G-K55K72W17D", {
-        // All pageview events are manually triggered.
+        // The initial page view event will be sent after the UI is updated.
         send_page_view: false
       });
     </script>
@@ -3527,21 +3527,29 @@
       return title;
     }
 
-    // Set the initial history state to show the ID in the URL and the proposition in the page title and to handle the back button.
-    const initialId = "{{ id }}";
-    const initialState = {
-      id: initialId,
-      german: $("#german-proposition").html(),
-      english: $("#english-proposition").html()
-    };
-    const initialPath = `/${initialId}`;
-    const initialTitle = updatePageTitle();
-    history.replaceState(initialState, document.title, initialPath);
+    // Update the page title and path to match the initial proposition.
+    $(() => {
+      const originalPath = window.location.pathname;
 
-    // Update the tracker state and trigger a virtual pageview event.
-    gtag("set", "page_path", initialPath);
-    gtag("set", "page_title", initialTitle);
-    gtag("event", "page_view");
+      const initialId = "{{ id }}";
+      const initialState = {
+        id: initialId,
+        german: $("#german-proposition").html(),
+        english: $("#english-proposition").html()
+      };
+      const initialPath = `/${initialId}`;
+      const initialTitle = updatePageTitle();
+      history.replaceState(initialState, document.title, initialPath);
+
+      // Update the analytics tracker state.
+      gtag("set", "page_path", initialPath);
+      gtag("set", "page_title", initialTitle);
+
+      // In cases where no automatic page view event is sent, send one manually.
+      if (originalPath === initialPath) {
+        gtag("event", "page_view");
+      }
+    });
 
     // Handle back button events using history state.
     $(window).on("popstate", (event) => {
@@ -3551,17 +3559,22 @@
         currentRequest = null;
       }
 
-      // Restore the proposition text and page title.
+      // Log an analytics event.
+      gtag("event", "button", {
+        event_category: "engagement",
+        event_label: "history"
+      });
+
+      // Restore the proposition content and page title.
       const state = event.originalEvent.state;
       $("#german-proposition").html(state.german);
       $("#english-proposition").html(state.english);
       const historyPath = `/${state.id}`;
       const historyTitle = updatePageTitle();
 
-      // Update the tracker state and trigger a virtual pageview event.
+      // Update the analytics tracker state.
       gtag("set", "page_path", historyPath);
       gtag("set", "page_title", historyTitle);
-      gtag("event", "page_view");
     });
 
     // Display a new proposition when the 'Shuffle' button is pressed.
@@ -3596,10 +3609,9 @@
         const newTitle = updatePageTitle();
         history.pushState(newState, document.title, newPath);
 
-        // Update the tracker state and trigger a virtual pageview event.
+        // Update the analytics tracker state.
         gtag("set", "page_path", newPath);
         gtag("set", "page_title", newTitle);
-        gtag("event", "page_view");
       }).fail((jqXHR, textStatus, errorThrown) => {
         // Show an error message if the request failed unexpectedly.
         console.error(errorThrown);
