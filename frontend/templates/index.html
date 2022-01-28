@@ -8,14 +8,14 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Wittgenstein 2022">
     <meta name="twitter:description" content="The Tractatus continues through artificial intelligence">
-    <meta name="twitter:image" content="{{ url_for('social_png', _external=True) }}">
+    <meta name="twitter:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
     <meta name="twitter:creator" content="@maxbraun">
     <meta name="twitter:site" content="@Wittgenstein22">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Wittgenstein 2022">
     <meta property="og:description" content="The Tractatus continues through artificial intelligence">
     <meta property="og:url" content="{{ url_for('id_page', id=id, _external=True) }}">
-    <meta property="og:image" content="{{ url_for('social_png', _external=True) }}">
+    <meta property="og:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=block" rel="stylesheet">
@@ -3518,8 +3518,8 @@
             <td class="german proposition nomobile" lang="de">Die Welt ist alles, was der Fall ist.</td>
           </tr>
         </table>
-        <img id="ludwig-off" class="ludwig" src="ludwig.png" alt="Ludwig Wittgenstein">
-        <img id="ludwig-on" class="ludwig" src="ludwig-vr.png" alt="Ludwig Wittgenstein in VR" style="display: none;">
+        <img id="ludwig-off" class="ludwig" src="{{ url_for('ludwig_png') }}" alt="Ludwig Wittgenstein">
+        <img id="ludwig-on" class="ludwig" src="{{ url_for('ludwig_vr_png') }}" alt="Ludwig Wittgenstein in VR" style="display: none;">
       </div>
     </div>
   </body>

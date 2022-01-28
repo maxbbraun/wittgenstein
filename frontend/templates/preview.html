@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=block" rel="stylesheet">
+    <style>
+      body {
+        background: white;
+        margin: 0;
+      }
+
+      .preview {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        display: block;
+        overflow: hidden;
+      }
+
+      table.propositions {
+        width: 100%;
+        height: 100%;
+        table-layout: auto;
+        border: none;
+        border-collapse: separate;
+        border-spacing: 0 0;
+      }
+
+      table.propositions:after {
+        position: absolute;
+        bottom: 0;
+        height: 100%;
+        width: 100%;
+        content: "";
+        background:
+          linear-gradient(to top,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(255, 255, 255, 0) 50%);
+      }
+
+      th.proposition {
+        color: black;
+        font-family: Vollkorn, serif;
+        font-size: 2rem;
+        font-weight: 600;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 0.3rem;
+        line-height: 3rem;
+        vertical-align: top;
+        width: 45rem;
+        border-top: 4rem solid transparent;
+        border-right: 4rem solid transparent;
+      }
+
+      td.proposition {
+        color: black;
+        font-family: Vollkorn, serif;
+        font-size: 2.4rem;
+        font-weight: 400;
+        letter-spacing: 0.02rem;
+        line-height: 3.6rem;
+        vertical-align: top;
+        text-align: left;
+        border-left: 2rem solid transparent;
+        border-top: 2rem solid transparent;
+        border-right: 4rem solid transparent;
+      }
+
+      td.proposition em {
+        letter-spacing: 0.2rem;
+      }
+
+      .number {
+        color: black;
+        font-family: Vollkorn, serif;
+        font-size: 2.4rem;
+        font-weight: 600;
+        letter-spacing: 0.02rem;
+        vertical-align: top;
+        border-top: 2rem solid transparent;
+        text-align: right;
+      }
+
+      .highlighted {
+        padding: 0.4rem 1.2rem;
+        margin: -0.4rem -1.2rem;
+        border-radius: 0.4rem;
+        background:
+          linear-gradient(85deg,
+            rgba(255, 236, 0, 0) 0%,
+            rgba(255, 236, 0, 1) 2%,
+            rgba(255, 236, 0, 0.5) 4%,
+            rgba(255, 236, 0, 0.15) 94%,
+            rgba(255, 236, 0, 0.6) 98%,
+            rgba(255, 236, 0, 0) 99%),
+          linear-gradient(178deg,
+            rgba(255, 236, 0, 0) 0%,
+            rgba(255, 236, 0, 0.7) 9%,
+            rgba(255, 236, 0, 0) 18%),
+          linear-gradient(179deg,
+            rgba(255, 236, 0, 0) 86%,
+            rgba(255, 236, 0, 0.3) 95%,
+            rgba(255, 236, 0, 0) 100%);
+        text-shadow: 0 0 0.6rem rgba(255, 236, 0, 0.4);
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+
+      img.ludwig {
+        width: 25rem;
+        position: absolute;
+        bottom: 0;
+        left: 3rem;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview">
+      <table class="propositions">
+        <tr>
+          <th class="number"></th>
+          <th class="proposition">Tractatus Logico-Philosophicus</th>
+        </tr>
+        <tr>
+          <td class="number">8</td>
+          <td class="proposition">
+            <span class="highlighted">{{ english | safe }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="number">7</td>
+          <td class="proposition">Whereof one cannot speak, thereof one must be silent.</td>
+        </tr>
+        <tr>
+          <td class="number">6</td>
+          <td class="proposition">The general form of truth-function is: [p̅, ξ̅, N(ξ̅)]. This is the general form
+            of proposition.</td>
+        </tr>
+        <tr>
+          <td class="number">5</td>
+          <td class="proposition">Propositions are truth-functions of elementary propositions. (An elementary proposition is
+            a truth-function of itself.)</td>
+        </tr>
+        <tr>
+          <td class="number">4</td>
+          <td class="proposition">The thought is the significant proposition.</td>
+        </tr>
+        <tr>
+          <td class="number">3</td>
+          <td class="proposition">The logical picture of the facts is the thought.</td>
+        </tr>
+        <tr>
+          <td class="number">2</td>
+          <td class="proposition">What is the case, the fact, is the existence of atomic facts.</td>
+        </tr>
+        <tr>
+          <td class="number">1</td>
+          <td class="proposition">The world is everything that is the case.</td>
+        </tr>
+      </table>
+      <img class="ludwig" src="{{ url_for('ludwig_vr_png') }}">
+    </div>
+  </body>
+</html>

@@ -1,13 +1,17 @@
+from flask import abort
 from flask import Flask
 from flask import make_response
 from flask import render_template
+from flask import redirect
 from flask import request
 from flask import send_from_directory
 from flask import url_for
 from flask_minify import decorators
 from flask_minify import minify
 from google.cloud import firestore
+from google.cloud import storage
 from google.cloud.firestore_v1.field_path import FieldPath
+import os
 import random
 import re
 
@@ -59,15 +63,15 @@ def random_query(transaction, propositions_ref, metadata_ref, exclude_id=None):
 
 
 def find_proposition(id, exclude_id=None):
-    # Only allow well-formed IDs in the query.
-    if not validate_id(id):
-        id = None
-
     # Get the propositions from Firestore.
     db = firestore.Client()
     propositions_ref = db.collection('propositions')
 
-    if not id:
+    if id:
+        # Only allow well-formed IDs in the query.
+        if not validate_id(id):
+            abort(404)  # Not Found
+    else:
         # Select a random proposition.
         transaction = db.transaction()
         metadata_ref = db.collection('metadata').document('propositions')
@@ -79,8 +83,7 @@ def find_proposition(id, exclude_id=None):
                     proposition.get('german'),
                     proposition.get('english'))
         else:
-            error = '<em>NO PROPOSITIONS FOUND</em>'
-            return '', error, error
+            abort(500)  # Internal Server Error
 
     # Look up a proposition by its ID.
     proposition_ref = propositions_ref.document(id)
@@ -91,8 +94,7 @@ def find_proposition(id, exclude_id=None):
                 proposition.get('german'),
                 proposition.get('english'))
     else:
-        error = '<em>PROPOSITION NOT FOUND</em>'
-        return '', error, error
+        abort(404)  # Not Found
 
 
 def render_page(id, german, english):
@@ -111,6 +113,11 @@ def render_json(id, german, english):
 
 def render_static(filename, mimetype):
     return send_from_directory('static', filename, mimetype=mimetype)
+
+
+def previews_bucket_name():
+    google_cloud_project = os.environ['GOOGLE_CLOUD_PROJECT']
+    return f'{google_cloud_project}-previews'
 
 
 @app.route('/')
@@ -178,9 +185,33 @@ def ludwig_vr_png():
     return render_static(filename='ludwig-vr.png', mimetype='image/png')
 
 
-@app.route('/social.png')
-def social_png():
-    return render_static(filename='social.png', mimetype='image/png')
+@app.route('/preview/<id>.html')
+def preview_html(id):
+    # Render the preview page.
+    id, german, english = find_proposition(id=id)
+    return render_template('preview.html',
+                           id=id,
+                           german=german,
+                           english=english)
+
+
+@app.route('/preview/<id>.png')
+def preview_png(id):
+    # Only allow well-formed IDs in the lookup.
+    if not validate_id(id):
+        abort(404)  # Not Found
+
+    # Create a reference to the preview image in Google Cloud Storage.
+    storage_client = storage.Client()
+    previews_bucket = storage_client.bucket(previews_bucket_name())
+    preview_blob_name = f'{id}.png'
+    preview_blob = previews_bucket.blob(preview_blob_name)
+
+    if not preview_blob.exists():
+        abort(404)  # Not Found.
+
+    # Redirect to the preview image URL.
+    return redirect(preview_blob.public_url)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
 Flask==2.0.2
 Flask-Minify==0.36
 google-cloud-firestore==2.3.4
+google-cloud-storage==2.1.0

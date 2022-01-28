@@ -1,3 +1,4 @@
 User-agent: *
 Sitemap: https://wittgenstein.app/sitemap.txt
 Disallow: /random.json
+Disallow: /preview/*.html
