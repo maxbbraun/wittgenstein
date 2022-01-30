@@ -49,6 +49,7 @@ def random_query(transaction, propositions_ref, metadata_ref, exclude_id=None):
             exclude_index = exclude_doc.get('index')
             random_range = list(random_range)
             random_range.remove(exclude_index)
+    random.seed()
     random_index = random.choice(random_range)
 
     # Retrieve the proposition with that index.
@@ -187,12 +188,22 @@ def ludwig_vr_png():
 
 @app.route('/preview/<id>.html')
 def preview_html(id):
-    # Render the preview page.
+    # Look up the proposition to preview.
     id, german, english = find_proposition(id=id)
+
+    # Pick randomly (but consistently per ID) between the two picture versions.
+    random.seed(id)
+    if random.getrandbits(1):
+        ludwig_url = url_for('ludwig_png')
+    else:
+        ludwig_url = url_for('ludwig_vr_png')
+
+    # Render the preview page.
     return render_template('preview.html',
                            id=id,
                            german=german,
-                           english=english)
+                           english=english,
+                           ludwig_url=ludwig_url)
 
 
 @app.route('/preview/<id>.png')
