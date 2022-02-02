@@ -3707,7 +3707,7 @@
 
     // Open the Medium story link when the 'About' button is pressed.
     $("#about-button").click(() => {
-      window.open("https://towardsdatascience.com/i-made-an-ai-read-wittgenstein-then-told-it-to-play-philosopher-ac730298098?sk=17f0f6830659a5d6b5521662cff8a463", "_blank");
+      window.open("{{ url_for('about_link') }}", "_blank");
 
       // Log an analytics event.
       gtag("event", "button", {
@@ -3718,7 +3718,7 @@
 
     // Open the GitHub repo link when the 'Code' button is pressed.
     $("#code-button").click(() => {
-      window.open("https://github.com/maxbbraun/wittgenstein", "_blank");
+      window.open("{{ url_for('code_link') }}", "_blank");
 
       // Log an analytics event.
       gtag("event", "button", {
@@ -3729,7 +3729,7 @@
 
     // Open the Twitter profile link when the 'Follow' button is pressed.
     $("#follow-button").click(() => {
-      window.open("https://twitter.com/Wittgenstein22", "_blank");
+      window.open("{{ url_for('follow_link') }}", "_blank");
 
       // Log an analytics event.
       gtag("event", "button", {

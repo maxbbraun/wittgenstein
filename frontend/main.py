@@ -159,8 +159,13 @@ def sitemap_txt():
     propositions_ref = db.collection('propositions')
     query_ref = propositions_ref.order_by(FieldPath.document_id())
 
-    # Create a list of fully qualified proposition URLs.
-    urls = []
+    # Start with the navigation links.
+    urls = [
+        url_for('about_link', _external=True),
+        url_for('code_link', _external=True),
+        url_for('follow_link', _external=True)]
+
+    # Append a list of fully qualified proposition URLs.
     for proposition in query_ref.stream():
         url = url_for('id_page', id=proposition.id, _external=True)
         urls.append(url)
@@ -223,6 +228,24 @@ def preview_png(id):
 
     # Redirect to the preview image URL.
     return redirect(preview_blob.public_url)
+
+
+@app.route('/about')
+def about_link():
+    return redirect('https://towardsdatascience.com/'
+                    'i-made-an-ai-read-wittgenstein-'
+                    'then-told-it-to-play-philosopher-'
+                    'ac730298098?sk=17f0f6830659a5d6b5521662cff8a463')
+
+
+@app.route('/code')
+def code_link():
+    return redirect('https://github.com/maxbbraun/wittgenstein')
+
+
+@app.route('/follow')
+def follow_link():
+    return redirect('https://twitter.com/Wittgenstein22')
 
 
 if __name__ == '__main__':
