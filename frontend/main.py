@@ -165,13 +165,8 @@ def sitemap_txt():
     propositions_ref = db.collection('propositions')
     query_ref = propositions_ref.order_by(FieldPath.document_id())
 
-    # Start with the navigation links.
-    urls = [
-        url_for('about_link', _external=True),
-        url_for('code_link', _external=True),
-        url_for('follow_link', _external=True)]
-
-    # Append a list of fully qualified proposition URLs.
+    # Create a list of fully qualified proposition URLs.
+    urls = []
     for proposition in query_ref.stream():
         url = url_for('id_page', id=proposition.id, _external=True)
         urls.append(url)
