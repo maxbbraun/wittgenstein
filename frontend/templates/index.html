@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Wittgenstein 2022</title>
-    <meta name="description" content="The Tractatus continues through artificial intelligence">
+    <meta name="description" content="The Tractatus continued through Artificial Intelligence">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Wittgenstein 2022">
-    <meta name="twitter:description" content="The Tractatus continues through artificial intelligence">
+    <meta name="twitter:description" content="The Tractatus continued through Artificial Intelligence">
     <meta name="twitter:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
     <meta name="twitter:creator" content="@maxbraun">
     <meta name="twitter:site" content="@Wittgenstein22">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Wittgenstein 2022">
-    <meta property="og:description" content="The Tractatus continues through artificial intelligence">
+    <meta property="og:description" content="The Tractatus continued through Artificial Intelligence">
     <meta property="og:url" content="{{ url_for('id_page', id=id, _external=True) }}">
     <meta property="og:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +39,7 @@
       }
 
       .centered {
+        display: block;
         margin-left: auto;
         margin-right: auto;
         max-width: 60rem;
@@ -187,7 +188,7 @@
         transform: translateY(0.1rem);
       }
 
-      .highlighted {
+      span.highlighted {
         padding: 0.2rem 0.6rem;
         margin: -0.2rem -0.6rem;
         border-radius: 0.2rem;
@@ -212,12 +213,35 @@
         -webkit-box-decoration-break: clone;
       }
 
+      span.disabled {
+        opacity: 20%;
+      }
+
+      img.disabled {
+        filter: grayscale(100%) contrast(10%) brightness(180%);
+        -webkit-filter: grayscale(100%) contrast(10%) brightness(180%);
+      }
+
+      .button.disabled {
+        pointer-events: none;
+      }
+
+      .illustration {
+        width: 16rem;
+        height: 16rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border: none;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
       img.ludwig {
         width: 12rem;
         display: block;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 3rem;
+        margin-top: 100rem;
         margin-bottom: 0;
         border: none;
       }
@@ -288,7 +312,7 @@
           with the imaginary, <em>post-mystical</em> number ‘8’
           in the hope of
           revealing new philosophical truths
-          through artificial intelligence.
+          through Artificial Intelligence.
         </h2>
         <div class="buttons">
           <button id="shuffle-button" class="primary button">
@@ -337,13 +361,14 @@
             </svg>
             Code
           </div>
-          <div id="follow-button" class="button">
+          <div id="share-button" class="button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
               <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
             </svg>
-            Follow
+            Share
           </div>
         </div>
+        <img class="centered illustration" id="illustration" src="{{ url_for('illustration_png', id=id) }}" alt="Illustration via OpenAI DALL·E 2">
         <table class="propositions">
           <tr>
             <th class="english number mobile"></th>
@@ -3544,7 +3569,8 @@
       const initialState = {
         id: initialId,
         german: $("#german-proposition").html(),
-        english: $("#english-proposition").html()
+        english: $("#english-proposition").html(),
+        illustration: $("#illustration").attr("src"),
       };
       const initialPath = `/${initialId}`;
       const initialTitle = updatePageTitle();
@@ -3574,12 +3600,13 @@
         event_label: "history"
       });
 
-      // Restore the proposition content and page title.
+      // Restore the proposition content, page title, and illustration.
       const state = event.originalEvent.state;
       $("#german-proposition").html(state.german);
       $("#english-proposition").html(state.english);
       const historyPath = `/${state.id}`;
       const historyTitle = updatePageTitle();
+      $("#illustration").attr("src", state.illustration);
 
       // Update the analytics tracker state.
       gtag("set", "page_path", historyPath);
@@ -3588,12 +3615,12 @@
 
     // Display a new proposition when the 'Shuffle' button is pressed.
     $("#shuffle-button").click(() => {
-      // Disable the button and hide the current proposition while loading.
-      $("#shuffle-button").prop("disabled", true);
-      const germanColor = $("#german-proposition").css("color");
-      const englishColor = $("#english-proposition").css("color");
-      $("#german-proposition").css("color", "transparent");
-      $("#english-proposition").css("color", "transparent");
+      // Disable some buttons and hide the proposition and illustration while loading.
+      $("#shuffle-button").addClass("disabled");
+      $("#share-button").addClass("disabled");
+      $("#german-proposition").addClass("disabled");
+      $("#english-proposition").addClass("disabled");
+      $("#illustration").addClass("disabled");
 
       // Log an analytics event.
       gtag("event", "button", {
@@ -3604,6 +3631,10 @@
       // Request the proposition.
       const randomUrl = `{{ url_for('random_json') }}?exclude=${history.state.id}`;
       currentRequest = $.getJSON(randomUrl, (json) => {
+        // Update the illustration.
+        const illustrationUrl = `{{ url_for('illustration_png') }}?id=${json.id}`;
+        $("#illustration").attr("src", illustrationUrl);
+
         // Update the proposition content.
         $("#german-proposition").html(json.german);
         $("#english-proposition").html(json.english);
@@ -3612,7 +3643,8 @@
         const newState = {
           id: json.id,
           german: json.german,
-          english: json.english
+          english: json.english,
+          illustration: illustrationUrl,
         };
         const newPath = `/${json.id}`;
         const newTitle = updatePageTitle();
@@ -3622,10 +3654,11 @@
         gtag("set", "page_path", newPath);
         gtag("set", "page_title", newTitle);
       }).fail((jqXHR, textStatus, errorThrown) => {
-        // Show an error message if the request failed unexpectedly.
+        // Show an error message and illustration if the request failed unexpectedly.
         console.error(errorThrown);
         $("#german-proposition").html(errorThrown);
         $("#english-proposition").html(errorThrown);
+        $("#illustration").attr("src", `{{ url_for('error_png') }}`);
 
         // Log the error message.
         gtag("event", "exception", {
@@ -3634,9 +3667,14 @@
         });
       }).always(() => {
         // Restore the UI state after any request.
-        $("#german-proposition").css("color", germanColor);
-        $("#english-proposition").css("color", englishColor);
-        $("#shuffle-button").prop("disabled", false);
+        $("#german-proposition").removeClass("disabled");
+        $("#english-proposition").removeClass("disabled");
+        $("#shuffle-button").removeClass("disabled");
+        $("#share-button").removeClass("disabled");
+        $("#illustration").on("load", () => {
+          // Enable the illustration once the illustration is available.
+          $("#illustration").removeClass("disabled");
+        });
 
         // Remove the current request.
         currentRequest = null;
@@ -3727,14 +3765,15 @@
       });
     });
 
-    // Open the Twitter profile link when the 'Follow' button is pressed.
-    $("#follow-button").click(() => {
-      window.open("{{ url_for('follow_link') }}", "_blank");
+    // Open the Twitter profile link when the 'Share' button is pressed.
+    $("#share-button").click(() => {
+      const id = history.state.id;
+      window.open(`{{ url_for('share_link') }}?id=${id}`, "_blank");
 
       // Log an analytics event.
       gtag("event", "button", {
         event_category: "engagement",
-        event_label: "follow"
+        event_label: "share"
       });
     });
 

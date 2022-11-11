@@ -14,6 +14,7 @@ from google.cloud.firestore_v1.field_path import FieldPath
 import os
 import random
 import re
+from urllib.parse import quote
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -119,6 +120,11 @@ def render_static(filename, mimetype):
 def previews_bucket_name():
     google_cloud_project = os.environ['GOOGLE_CLOUD_PROJECT']
     return f'{google_cloud_project}-previews'
+
+
+def illustrations_bucket_name():
+    google_cloud_project = os.environ['GOOGLE_CLOUD_PROJECT']
+    return f'{google_cloud_project}-illustrations'
 
 
 @app.route('/')
@@ -230,6 +236,42 @@ def preview_png(id):
     return redirect(preview_blob.public_url)
 
 
+@app.route('/illustration.png')
+def illustration_png():
+    # Expect the proposition ID to be passed as a query parameter.
+    id = request.args.get('id')
+
+    # Only allow well-formed IDs in the lookup.
+    if not validate_id(id):
+        abort(404)  # Not Found
+
+    # Create a reference to the illustration in Google Cloud Storage.
+    storage_client = storage.Client()
+    illustrations_bucket = storage_client.bucket(illustrations_bucket_name())
+    illustration_blob_name = f'{id}.png'
+    illustration_blob = illustrations_bucket.blob(illustration_blob_name)
+
+    if not illustration_blob.exists():
+        abort(404)  # Not Found.
+
+    # Redirect to the illustration URL.
+    return redirect(illustration_blob.public_url)
+
+
+@app.route('/error.png')
+def error_png():
+    # Retrieve the error image from Google Cloud Storage.
+    storage_client = storage.Client()
+    illustrations_bucket = storage_client.bucket(illustrations_bucket_name())
+    error_blob = illustrations_bucket.blob('error.png')
+
+    if not error_blob.exists():
+        abort(404)  # Not Found.
+
+    # Redirect to the error image URL.
+    return redirect(error_blob.public_url)
+
+
 @app.route('/about')
 def about_link():
     return redirect('https://towardsdatascience.com/'
@@ -243,9 +285,22 @@ def code_link():
     return redirect('https://github.com/maxbbraun/wittgenstein')
 
 
-@app.route('/follow')
-def follow_link():
-    return redirect('https://twitter.com/Wittgenstein22')
+@app.route('/share')
+def share_link():
+    # Expect the proposition ID to be passed as a query parameter.
+    id = request.args.get('id')
+
+    # Only allow well-formed IDs in the link.
+    if not validate_id(id):
+        abort(404)  # Not Found
+
+    # Construct the Twitter URL with text and a link.
+    link = url_for('id_page', id=id, _external=True)
+    text = quote(f'Thus Spoke @Wittgenstein22 {link}')
+    twitter_url = f'https://twitter.com/intent/tweet?text={text}'
+
+    # Redirect to the sharing URL.
+    return redirect(twitter_url)
 
 
 if __name__ == '__main__':
