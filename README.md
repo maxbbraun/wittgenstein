@@ -33,5 +33,54 @@ python main.py
 ```
 
 ```bash
-gcloud app deploy
+gcloud app deploy --project=${GOOGLE_CLOUD_PROJECT}
+```
+
+## Bot
+
+[Cloud Run](https://cloud.google.com/run/docs) & [Cloud Scheduler](https://cloud.google.com/scheduler/docs)
+
+```bash
+cd bot
+```
+
+```bash
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+
+export GOOGLE_CLOUD_PROJECT=$(gcloud config get-value project)
+export GOOGLE_APPLICATION_CREDENTIALS="path/to/service-account.json"
+
+python bot.py  # https://localhost:8080
+```
+
+```bash
+export GOOGLE_CLOUD_PROJECT=$(gcloud config get-value project)
+export SERVICE_NAME=bot-service
+export REGION=us-central1
+
+gcloud builds submit \
+  --project=${GOOGLE_CLOUD_PROJECT} \
+  --region=${REGION} \
+  --tag=gcr.io/${GOOGLE_CLOUD_PROJECT}/${SERVICE_NAME}
+gcloud run deploy ${SERVICE_NAME} \
+  --project=${GOOGLE_CLOUD_PROJECT} \
+  --region=${REGION} \
+  --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/${SERVICE_NAME} \
+  --set-env-vars=GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT} \
+  --allow-unauthenticated
+```
+
+```bash
+export JOB_NAME=bot-job
+export JOB_URI="$(gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} --region=${REGION} --format 'value(status.url)')/tweet"
+
+gcloud scheduler jobs create http ${JOB_NAME} \
+  --project=${GOOGLE_CLOUD_PROJECT} \
+  --location=${REGION} \
+  --schedule="0 9 * * 1" \
+  --time-zone="America/Los_Angeles" \
+  --uri=${JOB_URI} \
+  --http-method=post
 ```
