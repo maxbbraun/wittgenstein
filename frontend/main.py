@@ -144,6 +144,11 @@ def id_page(id):
     return _render_page(id=id, german=german, english=english)
 
 
+@app.route('/style.css')
+def style_css():
+    return _render_static(filename='style.css', mimetype='text/css')
+
+
 @app.route('/random.json')
 def random_json():
     # Optionally exclude a particular proposition by ID.
