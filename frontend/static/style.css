@@ -155,6 +155,29 @@ td.proposition em {
   transform: translateY(0.1rem);
 }
 
+.input {
+  width: 24rem;
+  text-align: left;
+  color: black;
+  font-family: Vollkorn, Times, "Noto Serif", serif;
+  background: white;
+  border-color: black;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.01rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.1rem;
+  margin: 0.4rem 0.3rem;
+  border: none;
+  border-bottom: 0.1rem solid;
+  display: inline-block;
+  cursor: text;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
 span.highlighted {
   padding: 0.2rem 0.6rem;
   margin: -0.2rem -0.6rem;
@@ -259,5 +282,10 @@ img.ludwig {
   .buttons {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
+  }
+
+  .input {
+    width: 16rem;
+    text-align: center;
   }
 }

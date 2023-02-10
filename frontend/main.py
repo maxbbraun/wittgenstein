@@ -1,3 +1,7 @@
+from cachetools import cached
+from cachetools import TTLCache
+from google.api_core.exceptions import GoogleAPIError
+from google.cloud.secretmanager import SecretManagerServiceClient
 from flask import abort
 from flask import Flask
 from flask import make_response
@@ -11,6 +15,8 @@ from flask_minify import minify
 from google.cloud import firestore
 from google.cloud import storage
 from google.cloud.firestore_v1.field_path import FieldPath
+import numpy as np
+import openai
 import os
 import random
 import re
@@ -128,6 +134,95 @@ def _illustrations_bucket_name():
     return f'{google_cloud_project}-illustrations'
 
 
+@cached(cache=TTLCache(maxsize=10, ttl=24*60*60))  # Cache 10 for 1 day.
+def _secret(key):
+    # Retrieve a value from the Google Cloud Secret Manager.
+    try:
+        google_cloud_project = os.environ['GOOGLE_CLOUD_PROJECT']
+        secretmanager_client = SecretManagerServiceClient()
+        secret_path = SecretManagerServiceClient.secret_version_path(
+            project=google_cloud_project, secret=key, secret_version='latest')
+        return secretmanager_client.access_secret_version(
+            name=secret_path).payload.data.decode('UTF-8')
+    except (KeyError, GoogleAPIError) as e:
+        raise ValueError(f'Failed to retrieve secret: {e}')
+
+
+def _sanitize(query):
+    if not query:
+        return None
+
+    # Enforce a maximum length.
+    query = query[:10000]
+
+    return query
+
+
+@cached(cache=TTLCache(maxsize=100, ttl=24*60*60))  # Cache 100 for 1 day.
+def _embedding(text, embedding_model):
+    openai.api_key = _secret('openai_api_key')
+
+    # Embed the text using the OpenAI API.
+    embedding_result = openai.Embedding.create(input=text,
+                                               model=embedding_model)
+    embedding = np.array(embedding_result['data'][0]['embedding'],
+                         dtype=np.float64)
+
+    return embedding
+
+
+@cached(cache=TTLCache(maxsize=1, ttl=24*60*60))  # Cache 1 for 1 day.
+def _proposition_embeddings(embedding_model):
+    german_embeddings = []
+    english_embeddings = []
+
+    # Collect the proposition embeddings from the database. They are ordered by
+    # ID, which is their proposition number.
+    db = firestore.Client()
+    db_query = db.collection('tractatus').where(
+        'embedding_model', '==', embedding_model)
+    for proposition in db_query.stream():
+        german_embeddings.append(proposition.get('german_embedding'))
+        english_embeddings.append(proposition.get('english_embedding'))
+
+    # Provide the embeddings in a format optimized for efficient math.
+    embeddings = np.array(list(zip(german_embeddings, english_embeddings)),
+                          dtype=np.float64)
+
+    return embeddings
+
+
+def _rank_propositions(query_embedding, proposition_embeddings):
+    # Calculate the similarities between query and proposition embeddings.
+    cosine_similarities = np.tensordot(query_embedding, proposition_embeddings,
+                                       axes=[0, 2])
+
+    # Use the multiplied similarities across both languages.
+    combined_similarities = np.prod(cosine_similarities, axis=1)
+
+    # Get a list of indices sorted by descending similarity.
+    ranking = np.flip(np.argsort(combined_similarities)).astype(np.int64)
+
+    return ranking
+
+
+def _search(query, embedding_model='text-embedding-ada-002'):
+    if not query:
+        return None
+
+    # Retrieve all propositions and their embeddings (via database or cache).
+    proposition_embeddings = _proposition_embeddings(embedding_model)
+
+    # Embed the query (via API request or cache).
+    query_embedding = _embedding(query, embedding_model)
+
+    # Get the rank order of propositions by their similarity to the query.
+    ranking = _rank_propositions(query_embedding, proposition_embeddings)
+
+    # Return the ranked order of propositions.
+    return ranking.tolist()
+
+
 @app.route('/')
 @decorators.minify(html=True, js=True, cssless=True)
 def random_page():
@@ -176,6 +271,9 @@ def sitemap_txt():
     for proposition in query_ref.stream():
         url = url_for('id_page', id=proposition.id, _external=True)
         urls.append(url)
+
+    # Add the search page.
+    urls.append(url_for('search_page', _external=True))
 
     # Return the list of URLs as plain text.
     response = make_response('\n'.join(urls), 200)
@@ -302,6 +400,40 @@ def share_link():
 
     # Redirect to the sharing URL.
     return redirect(twitter_url)
+
+
+@app.route('/search')
+@decorators.minify(html=True, js=True, cssless=True)
+def search_page():
+    # A search query request parameter is optional.
+    query = _sanitize(request.args.get('q'))
+
+    if query:
+        ranking = _search(query)
+    else:
+        ranking = None
+
+    # Serve the search results page.
+    return render_template('search.html', query=query, ranking=ranking)
+
+
+@app.route('/search.json')
+def search_json():
+    # Expect the search query to be passed as a request parameter.
+    query = _sanitize(request.args.get('q'))
+
+    # Perform the proposition search.
+    ranking = _search(query)
+
+    # Return the proposition ranking response as JSON.
+    if ranking:
+        return {
+            'query': query,
+            'ranking': ranking}
+    else:
+        return {
+            'query': query or None,
+            'ranking': None}
 
 
 if __name__ == '__main__':

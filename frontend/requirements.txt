@@ -1,4 +1,8 @@
-Flask==2.0.2
-Flask-Minify==0.36
-google-cloud-firestore==2.3.4
-google-cloud-storage==2.1.0
+cachetools==5.3.0
+Flask==2.2.2
+Flask-Minify==0.41
+google-cloud-firestore==2.9.1
+google-cloud-secret-manager==2.15.1
+google-cloud-storage==2.7.0
+numpy==1.24.2
+openai==0.26.5
