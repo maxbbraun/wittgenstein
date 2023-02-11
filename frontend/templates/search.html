@@ -3326,6 +3326,7 @@
 
       // Disable some buttons and hide the propositions while loading.
       $("#search-button").addClass("disabled");
+      $("#search-input").prop("disabled", true);
       $("#reset-button").addClass("disabled");
       const propositions = $("#propositions tr").get();
       $.each(propositions, (index, proposition) => {
@@ -3375,15 +3376,12 @@
       }).always(() => {
         // Restore the UI state after any request.
         $("#search-button").removeClass("disabled");
+        $("#search-input").prop("disabled", false);
         $("#reset-button").removeClass("disabled");
         $.each(propositions, (index, row) => {
           $(row).find("td").filter(".proposition").removeClass("disabled");
           $(row).find("td").filter(".number").removeClass("disabled");
         });
-
-        // Return the focus to the search box.
-        $("#search-input").val(query);
-        $("#search-input").focus();
 
         // Remove the current request.
         currentRequest = null;
