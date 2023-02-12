@@ -3,3 +3,4 @@ Sitemap: https://wittgenstein.app/sitemap.txt
 Disallow: /random.json
 Disallow: /search.json
 Disallow: /preview/*.html
+Disallow: /search.png
