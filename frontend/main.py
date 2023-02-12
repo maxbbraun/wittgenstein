@@ -296,6 +296,11 @@ def ludwig_vr_png():
     return _render_static(filename='ludwig-vr.png', mimetype='image/png')
 
 
+@app.route('/search.png')
+def search_png():
+    return _render_static(filename='search.png', mimetype='image/png')
+
+
 @app.route('/preview/<id>.html')
 def preview_html(id):
     # Look up the proposition to preview.

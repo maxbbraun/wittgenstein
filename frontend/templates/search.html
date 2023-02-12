@@ -4,16 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Ask Wittgenstein{{ ': ' + query if query else ''}}</title>
-    <meta name="description" content="Search the Tractatus with GPT-3">
-    <meta name="twitter:card" content="summary">
+    <meta name="description" content="Search the Tractatus with GPT-3 embeddings">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Ask Wittgenstein">
-    <meta name="twitter:description" content="Search the Tractatus with GPT-3">
+    <meta name="twitter:description" content="Search the Tractatus with GPT-3 embeddings">
+    <meta name="twitter:image" content="{{ url_for('search_png', _external=True) }}">
     <meta name="twitter:creator" content="@maxbraun">
     <meta name="twitter:site" content="@Wittgenstein22">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Ask Wittgenstein">
-    <meta property="og:description" content="Search the Tractatus with GPT-3">
+    <meta property="og:description" content="Search the Tractatus with GPT-3 embeddings">
     <meta property="og:url" content="{{ url_for('search_page', q=query, _external=True) }}">
+    <meta property="og:image" content="{{ url_for('search_png', _external=True) }}">
     <link rel="stylesheet" href="{{ url_for('style_css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
