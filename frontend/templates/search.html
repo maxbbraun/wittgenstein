@@ -3326,10 +3326,13 @@
     $('#search-form').submit((event) => {
       event.preventDefault();
 
-      // Disable some buttons and hide the propositions while loading.
-      $("#search-button").addClass("disabled");
-      $("#search-input").prop("disabled", true);
-      $("#reset-button").addClass("disabled");
+      // If there is an outstanding async request, abort it.
+      if (currentRequest) {
+        currentRequest.abort("aborted (search)");
+        currentRequest = null;
+      }
+
+      // Hide the propositions while loading.
       const propositions = $("#propositions tr").get();
       $.each(propositions, (index, proposition) => {
         $(proposition).find("td").filter(".proposition").addClass("disabled");
@@ -3377,9 +3380,6 @@
         });
       }).always(() => {
         // Restore the UI state after any request.
-        $("#search-button").removeClass("disabled");
-        $("#search-input").prop("disabled", false);
-        $("#reset-button").removeClass("disabled");
         $.each(propositions, (index, row) => {
           $(row).find("td").filter(".proposition").removeClass("disabled");
           $(row).find("td").filter(".number").removeClass("disabled");
@@ -3393,6 +3393,12 @@
     // Reset the UI when 'Reset' button is pressed.
     $("#reset-button").click(() => {
       event.preventDefault();
+
+      // If there is an outstanding async request, abort it.
+      if (currentRequest) {
+        currentRequest.abort("aborted (reset)");
+        currentRequest = null;
+      }
 
       // Use the default proposition order.
       reorderPropositions(null);
