@@ -3390,6 +3390,7 @@
           $(row).find("td").filter(".proposition").removeClass("disabled");
           $(row).find("td").filter(".number").removeClass("disabled");
         });
+        $("#search-input").blur();
 
         // Remove the current request.
         currentRequest = null;
