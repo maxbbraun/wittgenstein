@@ -21,6 +21,7 @@ import os
 import random
 import re
 from urllib.parse import quote
+from urllib.parse import unquote
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -152,7 +153,11 @@ def _sanitize(query):
     if not query:
         return None
 
-    # Enforce a maximum length.
+    # Remove any URL encoding.
+    query = unquote(query)
+
+    # Enforce a maximum query length. The hard limit for the model
+    # text-embedding-ada-002 is 8191 tokens (~30k characters).
     query = query[:10000]
 
     return query
