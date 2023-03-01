@@ -203,11 +203,7 @@ span.highlighted {
   -webkit-box-decoration-break: clone;
 }
 
-span.disabled, td.disabled {
-  opacity: 20%;
-}
-
-img.disabled {
+img.disabled, span.disabled, td.disabled {
   filter: grayscale(100%) contrast(10%) brightness(180%);
   -webkit-filter: grayscale(100%) contrast(10%) brightness(180%);
 }
