@@ -1,5 +1,6 @@
 from cachetools import cached
 from cachetools import TTLCache
+from concurrent.futures import ThreadPoolExecutor
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud.secretmanager import SecretManagerServiceClient
 from flask import abort
@@ -25,6 +26,12 @@ from urllib.parse import unquote
 
 # The model used and expected for any text embeddings.
 EMBEDDING_MODEL = 'text-embedding-ada-002'
+
+# The executor used to load embeddings in the background.
+embeddings_executor = ThreadPoolExecutor(max_workers=1)
+
+# The future eventually containing embeddings or None until loading starts.
+embeddings_future = None
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -179,8 +186,7 @@ def _embedding(text):
     return embedding
 
 
-@cached(cache=TTLCache(maxsize=1, ttl=24*60*60))  # Cache 1 for 1 day.
-def _proposition_embeddings():
+def _load_embeddings():
     german_embeddings = []
     english_embeddings = []
 
@@ -198,6 +204,15 @@ def _proposition_embeddings():
                           dtype=np.float64)
 
     return embeddings
+
+
+def _proposition_embeddings():
+    global embeddings_executor, embeddings_future
+
+    # Block until the embeddings are loaded.
+    embeddings_executor.shutdown(wait=True)
+
+    return embeddings_future.result()
 
 
 def _rank_propositions(query_embedding, proposition_embeddings):
@@ -418,8 +433,14 @@ def share_link():
 @app.route('/search')
 @decorators.minify(html=True, js=True, cssless=True)
 def search_page():
+    global embeddings_executor, embeddings_future
+
     # A search query request parameter is optional.
     query = _sanitize(request.args.get('q'))
+
+    # Any first visit to the search page triggers the embedding loading.
+    if not embeddings_future:
+        embeddings_future = embeddings_executor.submit(_load_embeddings)
 
     if query:
         ranking = _search(query)
