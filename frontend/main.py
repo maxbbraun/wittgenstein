@@ -1,5 +1,6 @@
 from cachetools import cached
 from cachetools import TTLCache
+from concurrent.futures import ThreadPoolExecutor
 from google.api_core.exceptions import GoogleAPIError
 from google.cloud.secretmanager import SecretManagerServiceClient
 from flask import abort
@@ -20,11 +21,64 @@ import openai
 import os
 import random
 import re
+from threading import Lock
 from urllib.parse import quote
 from urllib.parse import unquote
 
 # The model used and expected for any text embeddings.
 EMBEDDING_MODEL = 'text-embedding-ada-002'
+
+
+# A helper class for loading embeddings asynchronously in a thread-safe way.
+class EmbeddingsLoader:
+    def __init__(self):
+        self.executor = ThreadPoolExecutor(max_workers=1)
+        self.future = None
+        self.lock = Lock()
+
+    def _load(self):
+        german_embeddings = []
+        english_embeddings = []
+
+        # Collect the proposition embeddings from the database. They are
+        # ordered by document ID, which is their proposition number.
+        db = firestore.Client()
+        db_query = db.collection('tractatus').where(
+            'embedding_model', '==', EMBEDDING_MODEL)
+        for proposition in db_query.stream():
+            german_embeddings.append(proposition.get('german_embedding'))
+            english_embeddings.append(proposition.get('english_embedding'))
+
+        # Provide the embeddings in a format optimized for efficient math.
+        embeddings = np.array(list(zip(german_embeddings, english_embeddings)),
+                              dtype=np.float64)
+
+        return embeddings
+
+    def preload(self):
+        with self.lock:
+            if self.future:
+                # Already loading.
+                return
+
+            # Start loading.
+            self.future = self.executor.submit(self._load)
+
+    def embeddings(self):
+        with self.lock:
+            if not self.future:
+                # Not yet loading.
+                self.future = self.executor.submit(self._load)
+
+        # Block until loading is complete.
+        self.executor.shutdown(wait=True)
+
+        with self.lock:
+            # Return the embeddings.
+            return self.future.result()
+
+
+embeddings_loader = EmbeddingsLoader()
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -179,27 +233,6 @@ def _embedding(text):
     return embedding
 
 
-@cached(cache=TTLCache(maxsize=1, ttl=24*60*60))  # Cache 1 for 1 day.
-def _proposition_embeddings():
-    german_embeddings = []
-    english_embeddings = []
-
-    # Collect the proposition embeddings from the database. They are ordered by
-    # ID, which is their proposition number.
-    db = firestore.Client()
-    db_query = db.collection('tractatus').where(
-        'embedding_model', '==', EMBEDDING_MODEL)
-    for proposition in db_query.stream():
-        german_embeddings.append(proposition.get('german_embedding'))
-        english_embeddings.append(proposition.get('english_embedding'))
-
-    # Provide the embeddings in a format optimized for efficient math.
-    embeddings = np.array(list(zip(german_embeddings, english_embeddings)),
-                          dtype=np.float64)
-
-    return embeddings
-
-
 def _rank_propositions(query_embedding, proposition_embeddings):
     # Calculate the similarities between query and proposition embeddings.
     cosine_similarities = np.tensordot(query_embedding, proposition_embeddings,
@@ -218,8 +251,8 @@ def _search(query):
     if not query:
         return None
 
-    # Retrieve all propositions and their embeddings (via database or cache).
-    proposition_embeddings = _proposition_embeddings()
+    # Retrieve all propositions and their embeddings (may block until loaded).
+    proposition_embeddings = embeddings_loader.embeddings()
 
     # Embed the query (via API request or cache).
     query_embedding = _embedding(query)
@@ -418,6 +451,9 @@ def share_link():
 @app.route('/search')
 @decorators.minify(html=True, js=True, cssless=True)
 def search_page():
+    # Start preloading embeddings at the first visit to the search page.
+    embeddings_loader.preload()
+
     # A search query request parameter is optional.
     query = _sanitize(request.args.get('q'))
 
