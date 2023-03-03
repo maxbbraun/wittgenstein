@@ -23,6 +23,9 @@ import re
 from urllib.parse import quote
 from urllib.parse import unquote
 
+# The model used and expected for any text embeddings.
+EMBEDDING_MODEL = 'text-embedding-ada-002'
+
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
 
@@ -164,12 +167,12 @@ def _sanitize(query):
 
 
 @cached(cache=TTLCache(maxsize=100, ttl=24*60*60))  # Cache 100 for 1 day.
-def _embedding(text, embedding_model):
+def _embedding(text):
     openai.api_key = _secret('openai_api_key')
 
     # Embed the text using the OpenAI API.
     embedding_result = openai.Embedding.create(input=text,
-                                               model=embedding_model)
+                                               model=EMBEDDING_MODEL)
     embedding = np.array(embedding_result['data'][0]['embedding'],
                          dtype=np.float64)
 
@@ -177,7 +180,7 @@ def _embedding(text, embedding_model):
 
 
 @cached(cache=TTLCache(maxsize=1, ttl=24*60*60))  # Cache 1 for 1 day.
-def _proposition_embeddings(embedding_model):
+def _proposition_embeddings():
     german_embeddings = []
     english_embeddings = []
 
@@ -185,7 +188,7 @@ def _proposition_embeddings(embedding_model):
     # ID, which is their proposition number.
     db = firestore.Client()
     db_query = db.collection('tractatus').where(
-        'embedding_model', '==', embedding_model)
+        'embedding_model', '==', EMBEDDING_MODEL)
     for proposition in db_query.stream():
         german_embeddings.append(proposition.get('german_embedding'))
         english_embeddings.append(proposition.get('english_embedding'))
@@ -211,15 +214,15 @@ def _rank_propositions(query_embedding, proposition_embeddings):
     return ranking
 
 
-def _search(query, embedding_model='text-embedding-ada-002'):
+def _search(query):
     if not query:
         return None
 
     # Retrieve all propositions and their embeddings (via database or cache).
-    proposition_embeddings = _proposition_embeddings(embedding_model)
+    proposition_embeddings = _proposition_embeddings()
 
     # Embed the query (via API request or cache).
-    query_embedding = _embedding(query, embedding_model)
+    query_embedding = _embedding(query)
 
     # Get the rank order of propositions by their similarity to the query.
     ranking = _rank_propositions(query_embedding, proposition_embeddings)
