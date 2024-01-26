@@ -15,9 +15,10 @@ from flask_minify import decorators
 from flask_minify import minify
 from google.cloud import firestore
 from google.cloud import storage
+from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud.firestore_v1.field_path import FieldPath
 import numpy as np
-import openai
+from openai import OpenAI
 import os
 import random
 import re
@@ -26,7 +27,10 @@ from urllib.parse import quote
 from urllib.parse import unquote
 
 # The model used and expected for any text embeddings.
-EMBEDDING_MODEL = 'text-embedding-ada-002'
+EMBEDDING_MODEL = 'text-embedding-3-large'
+
+# The number of dimensions used and expected for any text embeddings.
+EMBEDDING_DIMENSIONS = 256
 
 
 # A helper class for loading embeddings asynchronously in a thread-safe way.
@@ -44,7 +48,7 @@ class EmbeddingsLoader:
         # ordered by document ID, which is their proposition number.
         db = firestore.Client()
         db_query = db.collection('tractatus').where(
-            'embedding_model', '==', EMBEDDING_MODEL)
+            filter=FieldFilter('embedding_model', '==', EMBEDDING_MODEL))
         for proposition in db_query.stream():
             german_embeddings.append(proposition.get('german_embedding'))
             english_embeddings.append(proposition.get('english_embedding'))
@@ -119,7 +123,8 @@ def _random_query(transaction, propositions_ref, metadata_ref,
     random_index = random.choice(random_range)
 
     # Retrieve the proposition with that index.
-    query_ref = propositions_ref.where('index', '==', random_index).limit(1)
+    query_ref = propositions_ref.where(
+        filter=FieldFilter('index', '==', random_index)).limit(1)
     try:
         proposition = next(query_ref.stream())
     except StopIteration:
@@ -222,13 +227,14 @@ def _sanitize(query):
 
 @cached(cache=TTLCache(maxsize=100, ttl=24*60*60))  # Cache 100 for 1 day.
 def _embedding(text):
-    openai.api_key = _secret('openai_api_key')
+    openai_client = OpenAI(api_key=_secret('openai_api_key'))
 
     # Embed the text using the OpenAI API.
-    embedding_result = openai.Embedding.create(input=text,
-                                               model=EMBEDDING_MODEL)
-    embedding = np.array(embedding_result['data'][0]['embedding'],
-                         dtype=np.float64)
+    embedding_result = openai_client.embeddings.create(
+        input=text,
+        model=EMBEDDING_MODEL,
+        dimensions=EMBEDDING_DIMENSIONS)
+    embedding = np.array(embedding_result.data[0].embedding, dtype=np.float64)
 
     return embedding
 
