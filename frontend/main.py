@@ -425,10 +425,10 @@ def error_png():
 
 @app.route('/about')
 def about_link():
-    return redirect('https://towardsdatascience.com/'
+    return redirect('https://medium.com/data-science/'
                     'i-made-an-ai-read-wittgenstein-'
                     'then-told-it-to-play-philosopher-'
-                    'ac730298098?sk=17f0f6830659a5d6b5521662cff8a463')
+                    'ac730298098')
 
 
 @app.route('/code')
