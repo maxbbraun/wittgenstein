@@ -3,6 +3,7 @@ name: Deploy Website to Google App Engine
 on:
   push:
     branches: [ main ]
+    paths: [ 'frontend/**' ]
   workflow_dispatch:
 
 jobs:
@@ -12,11 +13,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
