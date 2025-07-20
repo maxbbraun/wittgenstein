@@ -1,0 +1,43 @@
+name: Deploy Bot to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'bot/**'
+      - '.github/workflows/deploy-bot.yml'
+  workflow_dispatch:
+
+env:
+  CLOUD_RUN_SERVICE: bot-service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: ./bot
+        push: true
+        tags: gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+
+    - name: Deploy to Cloud Run
+      uses: google-github-actions/deploy-cloudrun@v2
+      with:
+        service: ${{ env.CLOUD_RUN_SERVICE }}
+        image: gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+        region: us-central1
+        allow_unauthenticated: true
+        env_vars: |
+          GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}
