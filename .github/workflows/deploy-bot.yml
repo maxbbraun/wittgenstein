@@ -13,8 +13,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      REGION: us-central1
       CLOUD_RUN_SERVICE: bot-service
-      DOCKER_IMAGE_TAG: ${{ secrets.GOOGLE_CLOUD_PROJECT }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/wittgenstein/bot-service:${{ github.sha }}
+      DOCKER_IMAGE_TAG: us-central1-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/wittgenstein/bot-service:${{ github.sha }}
 
     steps:
     - name: Checkout code
@@ -37,7 +38,7 @@ jobs:
       with:
         service: ${{ env.CLOUD_RUN_SERVICE }}
         image: ${{ env.DOCKER_IMAGE_TAG }}
-        region: us-central1
+        region: ${{ env.REGION }}
         allow_unauthenticated: true
         env_vars: |
           GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}
