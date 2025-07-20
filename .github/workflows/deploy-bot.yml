@@ -42,6 +42,6 @@ jobs:
         service: ${{ env.CLOUD_RUN_SERVICE }}
         image: ${{ env.DOCKER_IMAGE_TAG }}
         region: ${{ env.REGION }}
-        allow_unauthenticated: true
+        flags: --allow-unauthenticated
         env_vars: |
           GOOGLE_CLOUD_PROJECT=${{ secrets.GOOGLE_CLOUD_PROJECT }}
