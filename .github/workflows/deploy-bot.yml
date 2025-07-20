@@ -9,12 +9,12 @@ on:
       - '.github/workflows/deploy-bot.yml'
   workflow_dispatch:
 
-env:
-  CLOUD_RUN_SERVICE: bot-service
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLOUD_RUN_SERVICE: bot-service
+      DOCKER_IMAGE_TAG: ${{ secrets.GOOGLE_CLOUD_PROJECT }}-docker.pkg.dev/${{ secrets.GOOGLE_CLOUD_PROJECT }}/wittgenstein/bot-service:${{ github.sha }}
 
     steps:
     - name: Checkout code
@@ -30,13 +30,13 @@ jobs:
       with:
         context: ./bot
         push: true
-        tags: gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+        tags: ${{ env.DOCKER_IMAGE_TAG }}
 
     - name: Deploy to Cloud Run
       uses: google-github-actions/deploy-cloudrun@v2
       with:
         service: ${{ env.CLOUD_RUN_SERVICE }}
-        image: gcr.io/${{ secrets.GOOGLE_CLOUD_PROJECT }}/${{ env.CLOUD_RUN_SERVICE }}:${{ github.sha }}
+        image: ${{ env.DOCKER_IMAGE_TAG }}
         region: us-central1
         allow_unauthenticated: true
         env_vars: |
