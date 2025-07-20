@@ -19,11 +19,6 @@ jobs:
       with:
         credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
 
-    - name: Set up Google Cloud CLI
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-
     - name: Deploy to App Engine
       uses: google-github-actions/deploy-appengine@v2
       with:
