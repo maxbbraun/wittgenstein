@@ -198,7 +198,7 @@ def _render_json(id, german, english):
 
 
 def _render_static(filename, mimetype):
-    return send_from_directory('static', filename, mimetype=mimetype)
+    return send_from_directory(app.static_folder, filename, mimetype=mimetype)
 
 
 def _previews_bucket_name():
