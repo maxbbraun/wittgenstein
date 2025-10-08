@@ -198,7 +198,7 @@ def _render_json(id, german, english):
 
 
 def _render_static(filename, mimetype):
-    return send_from_directory(app.static_folder, filename, mimetype=mimetype)
+    return send_from_directory('static', filename, mimetype=mimetype)
 
 
 def _previews_bucket_name():
@@ -263,11 +263,10 @@ def _rank_propositions(query_embedding, proposition_embeddings):
                                        query_embedding,
                                        axes=[2, 0])
 
-    # Use the sum of similarities across both languages. This is analogous to
-    # a logical OR operation.
-    combined_similarities = np.sum(cosine_similarities,
-                                   axis=1,
-                                   dtype=np.float32)
+    # Use the multiplied similarities across both languages.
+    combined_similarities = np.prod(cosine_similarities,
+                                    axis=1,
+                                    dtype=np.float32)
 
     # Get a list of indices sorted by descending similarity.
     ranking = np.flip(np.argsort(combined_similarities)).astype(np.int32)
