@@ -32,6 +32,9 @@ EMBEDDING_MODEL = 'text-embedding-3-large'
 # The number of dimensions used and expected for any text embeddings.
 EMBEDDING_DIMENSIONS = 256
 
+# The data type used for text embeddings.
+EMBEDDING_DTYPE = np.float32
+
 
 # A helper class for loading embeddings asynchronously in a thread-safe way.
 class EmbeddingsLoader:
@@ -44,20 +47,31 @@ class EmbeddingsLoader:
         german_embeddings = []
         english_embeddings = []
 
-        # Collect the proposition embeddings from the database. They are
-        # ordered by document ID, which is their proposition number.
+        # Collect the bilingual proposition embeddings from the database. They
+        # are ordered by document ID, which is their proposition number.
         db = firestore.Client()
         db_query = db.collection('tractatus').where(
             filter=FieldFilter('embedding_model', '==', EMBEDDING_MODEL))
         for proposition in db_query.stream():
-            german_embeddings.append(proposition.get('german_embedding'))
-            english_embeddings.append(proposition.get('english_embedding'))
+            german_embedding = proposition.get('german_embedding')
+            english_embedding = proposition.get('english_embedding')
 
-        # Provide the embeddings in a format optimized for efficient math.
-        embeddings = np.array(list(zip(german_embeddings, english_embeddings)),
-                              dtype=np.float64)
+            if german_embedding is None or english_embedding is None:
+                raise ValueError(
+                    f'Missing embeddings for proposition {proposition.id}')
 
-        return embeddings
+            german_embeddings.append(np.asarray(german_embedding,
+                                                dtype=EMBEDDING_DTYPE))
+            english_embeddings.append(np.asarray(english_embedding,
+                                                 dtype=EMBEDDING_DTYPE))
+
+        if not german_embeddings or not english_embeddings:
+            return np.empty((0, 2, EMBEDDING_DIMENSIONS), dtype=EMBEDDING_DTYPE)
+
+        german_embeddings = np.stack(german_embeddings, axis=0)
+        english_embeddings = np.stack(english_embeddings, axis=0)
+
+        return np.stack((german_embeddings, english_embeddings), axis=1)
 
     def preload(self):
         with self.lock:
@@ -234,21 +248,28 @@ def _embedding(text):
         input=text,
         model=EMBEDDING_MODEL,
         dimensions=EMBEDDING_DIMENSIONS)
-    embedding = np.array(embedding_result.data[0].embedding, dtype=np.float64)
+    embedding = np.asarray(embedding_result.data[0].embedding,
+                           dtype=EMBEDDING_DTYPE)
 
     return embedding
 
 
 def _rank_propositions(query_embedding, proposition_embeddings):
     # Calculate the similarities between query and proposition embeddings.
-    cosine_similarities = np.tensordot(query_embedding, proposition_embeddings,
-                                       axes=[0, 2])
+    query_embedding = np.asarray(query_embedding, dtype=np.float32)
+    proposition_embeddings = np.asarray(proposition_embeddings,
+                                        dtype=np.float32)
+    cosine_similarities = np.tensordot(proposition_embeddings,
+                                       query_embedding,
+                                       axes=[2, 0])
 
     # Use the multiplied similarities across both languages.
-    combined_similarities = np.prod(cosine_similarities, axis=1)
+    combined_similarities = np.prod(cosine_similarities,
+                                    axis=1,
+                                    dtype=np.float32)
 
     # Get a list of indices sorted by descending similarity.
-    ranking = np.flip(np.argsort(combined_similarities)).astype(np.int64)
+    ranking = np.flip(np.argsort(combined_similarities)).astype(np.int32)
 
     return ranking
 
