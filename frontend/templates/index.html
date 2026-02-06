@@ -3536,8 +3536,12 @@
       });
     }
 
-    // Trigger the image swap on mouse enter/leave for desktop and tap for mobile.
-    $(".ludwig").on("mouseenter mouseleave tap", () => {
+    // Hover for mouse/trackpad and touchstart for taps (including hybrid devices).
+    $(".ludwig").on("mouseenter mouseleave touchstart", (event) => {
+      if (event.type === "touchstart") {
+        event.preventDefault();
+      }
+
       toggleLudwig();
     });
   </script>
