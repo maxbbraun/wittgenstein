@@ -3536,34 +3536,13 @@
       });
     }
 
-    // Support mouse hover and touch/pen taps, including hybrid devices.
-    const $ludwig = $(".ludwig");
-    const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const supportsPointerEvents = typeof window.PointerEvent !== "undefined";
-    const hasTouchPointer = window.matchMedia("(any-pointer: coarse)").matches || navigator.maxTouchPoints > 0;
-
-    if (supportsHover) {
-      $ludwig.on("mouseenter mouseleave", () => {
-        toggleLudwig();
-      });
-    }
-
-    if (supportsPointerEvents) {
-      $ludwig.on("pointerup", (event) => {
-        const pointerEvent = event.originalEvent || event;
-        const pointerType = pointerEvent.pointerType;
-        if (pointerType !== "touch" && pointerType !== "pen") {
-          return;
-        }
-
+    // Hover for mouse/trackpad and touchstart for taps (including hybrid devices).
+    $(".ludwig").on("mouseenter mouseleave touchstart", (event) => {
+      if (event.type === "touchstart") {
         event.preventDefault();
-        toggleLudwig();
-      });
-    } else if (hasTouchPointer || !supportsHover) {
-      $ludwig.on("click", (event) => {
-        event.preventDefault();
-        toggleLudwig();
-      });
-    }
+      }
+
+      toggleLudwig();
+    });
   </script>
 </html>
