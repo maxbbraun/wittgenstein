@@ -3536,9 +3536,17 @@
       });
     }
 
-    // Trigger the image swap on mouse enter/leave for desktop and tap for mobile.
-    $(".ludwig").on("mouseenter mouseleave tap", () => {
-      toggleLudwig();
-    });
+    // Use hover on desktop and click/tap toggle on touch devices.
+    const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (supportsHover) {
+      $(".ludwig").on("mouseenter mouseleave", () => {
+        toggleLudwig();
+      });
+    } else {
+      $(".ludwig").on("click", (event) => {
+        event.preventDefault();
+        toggleLudwig();
+      });
+    }
   </script>
 </html>
