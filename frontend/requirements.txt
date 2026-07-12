@@ -4,5 +4,4 @@ Flask-Minify==0.50
 google-cloud-firestore==2.27.0
 google-cloud-secret-manager==2.27.0
 google-cloud-storage==3.10.1
-numpy==2.4.4
 openai==2.35.1
