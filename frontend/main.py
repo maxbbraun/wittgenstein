@@ -16,13 +16,13 @@ from flask_minify import minify
 from google.cloud import firestore
 from google.cloud import storage
 from google.cloud.firestore_v1.base_query import FieldFilter
+from google.cloud.firestore_v1.base_vector_query import DistanceMeasure
 from google.cloud.firestore_v1.field_path import FieldPath
-import numpy as np
+from google.cloud.firestore_v1.vector import Vector
 from openai import OpenAI
 import os
 import random
 import re
-from threading import Lock
 from urllib.parse import quote
 from urllib.parse import unquote
 
@@ -31,72 +31,6 @@ EMBEDDING_MODEL = 'text-embedding-3-large'
 
 # The number of dimensions used and expected for any text embeddings.
 EMBEDDING_DIMENSIONS = 256
-
-# The data type used for text embeddings.
-EMBEDDING_DTYPE = np.float32
-
-
-# A helper class for loading embeddings asynchronously in a thread-safe way.
-class EmbeddingsLoader:
-    def __init__(self):
-        self.executor = ThreadPoolExecutor(max_workers=1)
-        self.future = None
-        self.lock = Lock()
-
-    def _load(self):
-        german_embeddings = []
-        english_embeddings = []
-
-        # Collect the bilingual proposition embeddings from the database. They
-        # are ordered by document ID, which is their proposition number.
-        db = firestore.Client()
-        db_query = db.collection('tractatus').where(
-            filter=FieldFilter('embedding_model', '==', EMBEDDING_MODEL))
-        for proposition in db_query.stream():
-            german_embedding = proposition.get('german_embedding')
-            english_embedding = proposition.get('english_embedding')
-
-            if german_embedding is None or english_embedding is None:
-                raise ValueError(
-                    f'Missing embeddings for proposition {proposition.id}')
-
-            german_embeddings.append(np.asarray(german_embedding,
-                                                dtype=EMBEDDING_DTYPE))
-            english_embeddings.append(np.asarray(english_embedding,
-                                                 dtype=EMBEDDING_DTYPE))
-
-        if not german_embeddings or not english_embeddings:
-            return np.empty((0, 2, EMBEDDING_DIMENSIONS), dtype=EMBEDDING_DTYPE)
-
-        german_embeddings = np.stack(german_embeddings, axis=0)
-        english_embeddings = np.stack(english_embeddings, axis=0)
-
-        return np.stack((german_embeddings, english_embeddings), axis=1)
-
-    def preload(self):
-        with self.lock:
-            if self.future:
-                # Already loading.
-                return
-
-            # Start loading.
-            self.future = self.executor.submit(self._load)
-
-    def embeddings(self):
-        with self.lock:
-            if not self.future:
-                # Not yet loading.
-                self.future = self.executor.submit(self._load)
-
-        # Block until loading is complete.
-        self.executor.shutdown(wait=True)
-
-        with self.lock:
-            # Return the embeddings.
-            return self.future.result()
-
-
-embeddings_loader = EmbeddingsLoader()
 
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
@@ -248,48 +182,58 @@ def _embedding(text):
         input=text,
         model=EMBEDDING_MODEL,
         dimensions=EMBEDDING_DIMENSIONS)
-    embedding = np.asarray(embedding_result.data[0].embedding,
-                           dtype=EMBEDDING_DTYPE)
-
-    return embedding
+    return embedding_result.data[0].embedding
 
 
-def _rank_propositions(query_embedding, proposition_embeddings):
-    # Calculate the similarities between query and proposition embeddings.
-    query_embedding = np.asarray(query_embedding, dtype=np.float32)
-    proposition_embeddings = np.asarray(proposition_embeddings,
-                                        dtype=np.float32)
-    cosine_similarities = np.tensordot(proposition_embeddings,
-                                       query_embedding,
-                                       axes=[2, 0])
+@cached(cache=TTLCache(maxsize=1, ttl=24*60*60))  # Cache 1 for 1 day.
+def _proposition_count():
+    # Count all propositions in the search collection.
+    count = firestore.Client().collection('tractatus').count().get()
+    return count[0][0].value
 
-    # Use the sum of similarities across both languages. This is analogous to
-    # a logical OR operation.
-    combined_similarities = np.sum(cosine_similarities,
-                                   axis=1,
-                                   dtype=np.float32)
 
-    # Get a list of indices sorted by descending similarity.
-    ranking = np.flip(np.argsort(combined_similarities)).astype(np.int32)
-
-    return ranking
+def _vector_scores(vector_field, query_embedding, proposition_count):
+    # Search one language's proposition embeddings.
+    query = firestore.Client().collection('tractatus').select(['score'])
+    documents = query.find_nearest(
+        vector_field=vector_field,
+        query_vector=Vector(query_embedding),
+        distance_measure=DistanceMeasure.DOT_PRODUCT,
+        limit=proposition_count,
+        distance_result_field='score').stream()
+    return {document.id: document.get('score') for document in documents}
 
 
 def _search(query):
     if not query:
         return None
 
-    # Retrieve all propositions and their embeddings (may block until loaded).
-    proposition_embeddings = embeddings_loader.embeddings()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        # Embed the query and count the propositions in parallel.
+        embedding = executor.submit(_embedding, query)
+        count = executor.submit(_proposition_count)
+        query_embedding = embedding.result()
+        proposition_count = count.result()
 
-    # Embed the query (via API request or cache).
-    query_embedding = _embedding(query)
+        # Search the German and English embeddings in parallel.
+        german = executor.submit(
+            _vector_scores,
+            'german_embedding', query_embedding, proposition_count)
+        english = executor.submit(
+            _vector_scores,
+            'english_embedding', query_embedding, proposition_count)
+        german_scores = german.result()
+        english_scores = english.result()
 
-    # Get the rank order of propositions by their similarity to the query.
-    ranking = _rank_propositions(query_embedding, proposition_embeddings)
+    # Both searches must rank the same propositions.
+    if german_scores.keys() != english_scores.keys():
+        raise ValueError('Mismatched vector search results')
 
-    # Return the ranked order of propositions.
-    return ranking.tolist()
+    # Sort by the sum of the German and English similarities.
+    return sorted(
+        german_scores,
+        key=lambda id: german_scores[id] + english_scores[id],
+        reverse=True)
 
 
 @app.route('/')
@@ -479,9 +423,6 @@ def share_link():
 @app.route('/search')
 @decorators.minify(html=True, js=True, cssless=True)
 def search_page():
-    # Start preloading embeddings at the first visit to the search page.
-    embeddings_loader.preload()
-
     # A search query request parameter is optional.
     query = _sanitize(request.args.get('q'))
 

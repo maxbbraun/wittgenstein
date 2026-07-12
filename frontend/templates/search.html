@@ -3252,20 +3252,27 @@
       return title;
     }
 
-    // Reorders the propositions based on a ranking (a list of indices).
+    // Index the proposition rows by number, preserving their original order.
+    const propositionsByNumber = new Map(
+      $("#propositions tr[index]").get().map((proposition) => [
+        $(proposition).find("td.number").first().text().trim(),
+        proposition
+      ]));
+
+    // Reorders the Tractatus propositions by number. Those numbers are also
+    // their document IDs in the tractatus collection.
     function reorderPropositions(ranking) {
       let highlight = true;
 
       // Default to the original order and disable highlighting.
       if (!ranking) {
-        const propositions = $("#propositions tr").get();
-        ranking = [...Array(propositions.length).keys()];
+        ranking = [...propositionsByNumber.keys()];
         highlight = false;
       }
 
-      // Move each table row to the position corresponding to its ranking index.
-      $.each(ranking, (rank, index) => {
-        const proposition = $(`#propositions tr[index=${index}]`);
+      // Move each table row to its ranked position.
+      $.each(ranking, (rank, number) => {
+        const proposition = $(propositionsByNumber.get(number));
         $("#propositions").children("tbody").append(proposition);
 
         // Highlight only the top-ranked proposition.
