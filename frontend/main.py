@@ -274,10 +274,12 @@ def robots_txt():
 
 @app.route('/sitemap.txt')
 def sitemap_txt():
-    # Get all propositions from Firestore.
+    # Get all proposition IDs from Firestore.
     db = firestore.Client()
     propositions_ref = db.collection('propositions')
-    query_ref = propositions_ref.order_by(FieldPath.document_id())
+    query_ref = (propositions_ref
+                 .select([])
+                 .order_by(FieldPath.document_id()))
 
     # Create a list of fully qualified proposition URLs.
     urls = []
@@ -289,7 +291,7 @@ def sitemap_txt():
     urls.append(url_for('search_page', _external=True))
 
     # Return the list of URLs as plain text.
-    response = make_response('\n'.join(urls), 200)
+    response = make_response('\n'.join(urls) + '\n', 200)
     response.mimetype = 'text/plain'
     return response
 
