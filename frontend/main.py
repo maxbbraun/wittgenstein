@@ -274,17 +274,15 @@ def robots_txt():
 
 @app.route('/sitemap.txt')
 def sitemap_txt():
-    # Get all propositions from Firestore.
+    # Get all proposition IDs from Firestore.
     db = firestore.Client()
     propositions_ref = db.collection('propositions')
-    # Only retrieve document IDs. Proposition documents contain large embedding
-    # vectors that are not needed to build the sitemap.
     query_ref = (propositions_ref
                  .select([])
                  .order_by(FieldPath.document_id()))
 
     # Create a list of fully qualified proposition URLs.
-    urls = [url_for('random_page', _external=True)]
+    urls = []
     for proposition in query_ref.stream():
         url = url_for('id_page', id=proposition.id, _external=True)
         urls.append(url)
