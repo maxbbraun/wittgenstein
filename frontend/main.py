@@ -26,12 +26,6 @@ import re
 from urllib.parse import quote
 from urllib.parse import unquote
 
-# The model used and expected for any text embeddings.
-EMBEDDING_MODEL = 'text-embedding-3-large'
-
-# The number of dimensions used and expected for any text embeddings.
-EMBEDDING_DIMENSIONS = 256
-
 app = Flask(__name__)
 minify(app=app, caching_limit=0, passive=True)
 
@@ -180,8 +174,8 @@ def _embedding(text):
     # Embed the text using the OpenAI API.
     embedding_result = openai_client.embeddings.create(
         input=text,
-        model=EMBEDDING_MODEL,
-        dimensions=EMBEDDING_DIMENSIONS)
+        model='text-embedding-3-large',
+        dimensions=256)
     return embedding_result.data[0].embedding
 
 
