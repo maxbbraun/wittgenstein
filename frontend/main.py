@@ -295,19 +295,19 @@ def favicon_ico():
     return _render_static(filename='favicon.ico', mimetype='image/x-icon')
 
 
-@app.route('/ludwig.png')
-def ludwig_png():
-    return _render_static(filename='ludwig.png', mimetype='image/png')
+@app.route('/ludwig.webp')
+def ludwig_webp():
+    return _render_static(filename='ludwig.webp', mimetype='image/webp')
 
 
-@app.route('/ludwig-vr.png')
-def ludwig_vr_png():
-    return _render_static(filename='ludwig-vr.png', mimetype='image/png')
+@app.route('/ludwig-vr.webp')
+def ludwig_vr_webp():
+    return _render_static(filename='ludwig-vr.webp', mimetype='image/webp')
 
 
-@app.route('/search.png')
-def search_png():
-    return _render_static(filename='search.png', mimetype='image/png')
+@app.route('/search.webp')
+def search_webp():
+    return _render_static(filename='search.webp', mimetype='image/webp')
 
 
 @app.route('/preview/<id>.html')
@@ -318,9 +318,9 @@ def preview_html(id):
     # Pick randomly (but consistently per ID) between the two picture versions.
     random.seed(id)
     if random.getrandbits(1):
-        ludwig_url = url_for('ludwig_png')
+        ludwig_url = url_for('ludwig_webp')
     else:
-        ludwig_url = url_for('ludwig_vr_png')
+        ludwig_url = url_for('ludwig_vr_webp')
 
     # Render the preview page.
     return render_template('preview.html',
@@ -330,8 +330,8 @@ def preview_html(id):
                            ludwig_url=ludwig_url)
 
 
-@app.route('/preview/<id>.png')
-def preview_png(id):
+@app.route('/preview/<id>.webp')
+def preview_webp(id):
     # Only allow well-formed IDs in the lookup.
     if not _validate_id(id):
         abort(404)  # Not Found
@@ -339,7 +339,7 @@ def preview_png(id):
     # Create a reference to the preview image in Google Cloud Storage.
     storage_client = storage.Client()
     previews_bucket = storage_client.bucket(_previews_bucket_name())
-    preview_blob_name = f'{id}.png'
+    preview_blob_name = f'{id}.webp'
     preview_blob = previews_bucket.blob(preview_blob_name)
 
     if not preview_blob.exists():
@@ -349,8 +349,8 @@ def preview_png(id):
     return redirect(preview_blob.public_url)
 
 
-@app.route('/illustration.png')
-def illustration_png():
+@app.route('/illustration.webp')
+def illustration_webp():
     # Expect the proposition ID to be passed as a query parameter.
     id = request.args.get('id')
 
@@ -361,7 +361,7 @@ def illustration_png():
     # Create a reference to the illustration in Google Cloud Storage.
     storage_client = storage.Client()
     illustrations_bucket = storage_client.bucket(_illustrations_bucket_name())
-    illustration_blob_name = f'{id}.png'
+    illustration_blob_name = f'{id}.webp'
     illustration_blob = illustrations_bucket.blob(illustration_blob_name)
 
     if not illustration_blob.exists():
@@ -371,12 +371,12 @@ def illustration_png():
     return redirect(illustration_blob.public_url)
 
 
-@app.route('/error.png')
-def error_png():
+@app.route('/error.webp')
+def error_webp():
     # Retrieve the error image from Google Cloud Storage.
     storage_client = storage.Client()
     illustrations_bucket = storage_client.bucket(_illustrations_bucket_name())
-    error_blob = illustrations_bucket.blob('error.png')
+    error_blob = illustrations_bucket.blob('error.webp')
 
     if not error_blob.exists():
         abort(404)  # Not Found.
