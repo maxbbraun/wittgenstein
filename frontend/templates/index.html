@@ -3358,7 +3358,7 @@
       if (currentRequest) return;
 
       // Disable some buttons and hide the proposition and illustration while loading.
-      $("#shuffle-button").prop("disabled", true).addClass("disabled");
+      $("#shuffle-button").attr("aria-disabled", "true").addClass("disabled");
       $("#share-button").addClass("disabled");
       $("#german-proposition").addClass("disabled");
       $("#english-proposition").addClass("disabled");
@@ -3411,7 +3411,7 @@
         // Restore the UI state after any request.
         $("#german-proposition").removeClass("disabled");
         $("#english-proposition").removeClass("disabled");
-        $("#shuffle-button").prop("disabled", false).removeClass("disabled");
+        $("#shuffle-button").attr("aria-disabled", "false").removeClass("disabled");
         $("#share-button").removeClass("disabled");
         $("#illustration").on("load", () => {
           // Enable the illustration once the illustration is available.
