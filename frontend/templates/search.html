@@ -17,9 +17,7 @@
     <meta property="og:url" content="{{ url_for('search_page', q=query, _external=True) }}">
     <meta property="og:image" content="{{ url_for('search_webp', _external=True) }}">
     <link rel="stylesheet" href="{{ url_for('style_css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400;1,600&display=block" rel="stylesheet">
+    <link href="{{ url_for('static', filename='fonts/vollkorn-v30/fonts.css') }}" rel="stylesheet">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K55K72W17D"></script>
     <script>
