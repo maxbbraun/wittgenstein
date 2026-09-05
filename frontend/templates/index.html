@@ -8,14 +8,14 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Wittgenstein 2022">
     <meta name="twitter:description" content="The Tractatus continued through Artificial Intelligence">
-    <meta name="twitter:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
+    <meta name="twitter:image" content="{{ url_for('preview_webp', id=id, _external=True) }}">
     <meta name="twitter:creator" content="@maxbraun">
     <meta name="twitter:site" content="@Wittgenstein22">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Wittgenstein 2022">
     <meta property="og:description" content="The Tractatus continued through Artificial Intelligence">
     <meta property="og:url" content="{{ url_for('id_page', id=id, _external=True) }}">
-    <meta property="og:image" content="{{ url_for('preview_png', id=id, _external=True) }}">
+    <meta property="og:image" content="{{ url_for('preview_webp', id=id, _external=True) }}">
     <link rel="stylesheet" href="{{ url_for('style_css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,7 +108,7 @@
             </button>
           </span>
         </div>
-        <img class="centered illustration" id="illustration" src="{{ url_for('illustration_png', id=id) }}" alt="Illustration via OpenAI DALL·E 2">
+        <img class="centered illustration" id="illustration" src="{{ url_for('illustration_webp', id=id) }}" alt="Illustration via OpenAI DALL·E 2">
         <table class="propositions">
           <tr>
             <th class="english number mobile"></th>
@@ -3283,8 +3283,8 @@
             <td class="german proposition nomobile" lang="de">Die Welt ist alles, was der Fall ist.</td>
           </tr>
         </table>
-        <img id="ludwig-off" class="ludwig" src="{{ url_for('ludwig_png') }}" alt="Ludwig Wittgenstein">
-        <img id="ludwig-on" class="ludwig" src="{{ url_for('ludwig_vr_png') }}" alt="Ludwig Wittgenstein in VR" style="display: none;">
+        <img id="ludwig-off" class="ludwig" src="{{ url_for('ludwig_webp') }}" alt="Ludwig Wittgenstein">
+        <img id="ludwig-on" class="ludwig" src="{{ url_for('ludwig_vr_webp') }}" alt="Ludwig Wittgenstein in VR" style="display: none;">
       </div>
     </div>
   </body>
@@ -3372,7 +3372,7 @@
       const randomUrl = `{{ url_for('random_json') }}?exclude=${history.state.id}`;
       currentRequest = $.getJSON(randomUrl, (json) => {
         // Update the illustration.
-        const illustrationUrl = `{{ url_for('illustration_png') }}?id=${json.id}`;
+        const illustrationUrl = `{{ url_for('illustration_webp') }}?id=${json.id}`;
         $("#illustration").attr("src", illustrationUrl);
 
         // Update the proposition content.
@@ -3398,7 +3398,7 @@
         console.error(errorThrown);
         $("#german-proposition").html(errorThrown);
         $("#english-proposition").html(errorThrown);
-        $("#illustration").attr("src", `{{ url_for('error_png') }}`);
+        $("#illustration").attr("src", `{{ url_for('error_webp') }}`);
 
         // Log the error message.
         gtag("event", "exception", {
