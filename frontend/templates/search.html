@@ -3287,8 +3287,8 @@
 
     // Initiatlize the history state and the UI.
     $(() => {
-      const initialQuery = "{{ query or '' }}";
-      const initialRanking = eval("{{ ranking | tojson}}");
+      const initialQuery = {{ (query or '') | tojson }};
+      const initialRanking = {{ ranking | tojson }};
       const initialState = {
         query: initialQuery,
         ranking: initialRanking
@@ -3296,7 +3296,7 @@
       history.replaceState(initialState, document.title);
 
       // Add the query from the request to the search box and focus on it.
-      $("#search-input").val("{{ query or '' }}");
+      $("#search-input").val(initialQuery);
       $("#search-input").focus();
 
       // Apply the initial ranking.
@@ -3377,7 +3377,7 @@
         gtag("set", "page_title", newTitle);
       }).fail((jqXHR, textStatus, errorThrown) => {
         // Ignore manually aborted requests.
-        if (errorThrown.startsWith("aborted (")) {
+        if (textStatus.startsWith("aborted (")) {
           console.warn(errorThrown);
           return;
         }
