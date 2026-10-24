@@ -1,4 +1,4 @@
-runtime: python311
+runtime: python312
 entrypoint: gunicorn -b :$PORT --workers 1 --threads 2 --timeout 60 main:app
 
 instance_class: F1
